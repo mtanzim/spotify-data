@@ -2,12 +2,13 @@
   import ProgressBar from "@okrad/svelte-progressbar";
   /*
 Over what time frame the affinities are computed. 
-Valid values: long_term (calculated from several years of data and including all new data as it becomes available), 
+Valid values: 
+long_term (calculated from several years of data and including all new data as it becomes available), 
 medium_term (approximately last 6 months), 
 short_term (approximately last 4 weeks). Default: medium_term
 */
   const RANGE = "long_term";
-  const LIMIT = 50;
+  const LIMIT = 49;
   const OFFSET = 0;
 
   // https://developer.spotify.com/documentation/web-api/reference/#endpoint-get-users-top-artists-and-tracks
@@ -23,28 +24,31 @@ short_term (approximately last 4 weeks). Default: medium_term
       }
     );
 
-  const getUserTopArtists = () =>
-    fetch(
-      `https://api.spotify.com/v1/me/top/artists?time_range=${RANGE}&limit=${LIMIT}&offset=${OFFSET}`,
-      {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: __myapp.env["AUTH_TOKEN"],
-        },
-      }
-    );
+  const getUserTopArtists = (url) =>
+    fetch(url, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: __myapp.env["AUTH_TOKEN"],
+      },
+    });
 
-  async function artists() {
-    const raw = await getUserTopArtists();
+  async function artists(url) {
+    if (url === null) {
+      return Promise.resolve([]);
+    }
+    const raw = await getUserTopArtists(url);
     if (raw.ok) {
       const jsonData = await raw.json();
-      const { items } = jsonData;
-      return items;
+      const { items, next } = jsonData;
+      console.log({ items, next });
+      return artists(next).then((nextItems) => items.concat(nextItems));
     }
     throw new Error("Failed to fetch top artists");
   }
-  let artistsPromise = artists();
+  let artistsPromise = artists(
+    `https://api.spotify.com/v1/me/top/artists?time_range=${RANGE}&limit=${LIMIT}&offset=${OFFSET}`
+  );
 </script>
 
 <main>
@@ -55,13 +59,13 @@ short_term (approximately last 4 weeks). Default: medium_term
     <div class="artist-block-container">
       {#each artists as artist, i}
         <div class="artist-block">
+          <p>{i + 1}</p>
           <img
             class="artist-image"
             src={artist.images[0].url}
             alt={artist.name}
           />
           <h2>{artist.name}</h2>
-          <!-- <p>{i + 1}</p> -->
           <span class="progress-bar">
             <ProgressBar style="thin" series={[artist.popularity]} />
           </span>
