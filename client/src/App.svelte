@@ -5,9 +5,9 @@ Valid values: long_term (calculated from several years of data and including all
 medium_term (approximately last 6 months), 
 short_term (approximately last 4 weeks). Default: medium_term
 */
-  const RANGE = "long_term";
+  const RANGE = "medium_term";
   const LIMIT = 50;
-  const OFFSET = 49;
+  const OFFSET = 0;
 
   // https://developer.spotify.com/documentation/web-api/reference/#endpoint-get-users-top-artists-and-tracks
   const getUserTopTracks = () =>
@@ -34,23 +34,7 @@ short_term (approximately last 4 weeks). Default: medium_term
       }
     );
 
-  async function tracks() {
-    console.log("Tracks");
-    try {
-      const raw = await getUserTopTracks();
-      const jsonData = await raw.json();
-      const { items } = jsonData;
-      items.forEach((item) => {
-        const { name, popularity } = item;
-        console.log({ name, popularity });
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   async function artists() {
-    console.log("Artists");
     const raw = await getUserTopArtists();
     if (raw.ok) {
       const jsonData = await raw.json();
@@ -66,10 +50,17 @@ short_term (approximately last 4 weeks). Default: medium_term
   {#await artistsPromise}
     <p>...waiting</p>
   {:then artists}
-    <div>
+    <h1>Top Artists</h1>
+    <div class="artist-block-container">
       {#each artists as artist, i}
-        <h2>{artist.name}</h2>
-        <img src={artist.images[0].url} alt={artist.name} />
+        <div class="artist-block">
+          <img
+            class="artist-image"
+            src={artist.images[0].url}
+            alt={artist.name}
+          />
+          <h2>{artist.name}</h2>
+        </div>
       {/each}
     </div>
   {:catch error}
@@ -90,6 +81,34 @@ short_term (approximately last 4 weeks). Default: medium_term
     text-transform: uppercase;
     font-size: 4em;
     font-weight: 100;
+  }
+
+  h2 {
+    color: #ff3e00;
+    font-size: 2.5em;
+    font-weight: 100;
+  }
+
+  .artist-block-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+  .artist-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: auto;
+    /* border: solid 1px black; */
+    margin: 12px;
+    padding: 8px;
+    transition: width 2s linear 1s;
+  }
+  .artist-image {
+    max-width: 400px;
+    max-height: 400px;
+    height: auto;
+    width: auto;
+    object-fit: contain;
   }
 
   @media (min-width: 640px) {
