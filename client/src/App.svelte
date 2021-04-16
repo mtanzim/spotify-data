@@ -117,11 +117,7 @@ short_term (approximately last 4 weeks). Default: medium_term
     object-fit: contain;
     animation: fadeIn 1.5s;
   }
-  .artist-text-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-  }
+
   .progress-bar {
     width: 100%;
   }
