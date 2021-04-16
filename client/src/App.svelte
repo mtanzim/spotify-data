@@ -1,11 +1,12 @@
 <script lang="ts">
+  import ProgressBar from "@okrad/svelte-progressbar";
   /*
 Over what time frame the affinities are computed. 
 Valid values: long_term (calculated from several years of data and including all new data as it becomes available), 
 medium_term (approximately last 6 months), 
 short_term (approximately last 4 weeks). Default: medium_term
 */
-  const RANGE = "medium_term";
+  const RANGE = "long_term";
   const LIMIT = 50;
   const OFFSET = 0;
 
@@ -47,10 +48,10 @@ short_term (approximately last 4 weeks). Default: medium_term
 </script>
 
 <main>
+  <h1>Top Artists</h1>
   {#await artistsPromise}
-    <p>...waiting</p>
+    <h2>...waiting</h2>
   {:then artists}
-    <h1>Top Artists</h1>
     <div class="artist-block-container">
       {#each artists as artist, i}
         <div class="artist-block">
@@ -60,6 +61,10 @@ short_term (approximately last 4 weeks). Default: medium_term
             alt={artist.name}
           />
           <h2>{artist.name}</h2>
+          <!-- <p>{i + 1}</p> -->
+          <span class="progress-bar">
+            <ProgressBar style="thin" series={[artist.popularity]} />
+          </span>
         </div>
       {/each}
     </div>
@@ -109,6 +114,23 @@ short_term (approximately last 4 weeks). Default: medium_term
     height: auto;
     width: auto;
     object-fit: contain;
+    animation: fadeIn 1.5s;
+  }
+  .artist-text-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+  .progress-bar {
+    width: 100%;
+  }
+  @keyframes fadeIn {
+    0% {
+      opacity: 0.4;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 
   @media (min-width: 640px) {
