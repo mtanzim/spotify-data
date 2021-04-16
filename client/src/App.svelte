@@ -2,13 +2,12 @@
   import ProgressBar from "@okrad/svelte-progressbar";
   /*
 Over what time frame the affinities are computed. 
-Valid values: 
-long_term (calculated from several years of data and including all new data as it becomes available), 
+Valid values: long_term (calculated from several years of data and including all new data as it becomes available), 
 medium_term (approximately last 6 months), 
 short_term (approximately last 4 weeks). Default: medium_term
 */
   const RANGE = "long_term";
-  const LIMIT = 49;
+  const LIMIT = 50;
   const OFFSET = 0;
 
   // https://developer.spotify.com/documentation/web-api/reference/#endpoint-get-users-top-artists-and-tracks
@@ -33,22 +32,20 @@ short_term (approximately last 4 weeks). Default: medium_term
       },
     });
 
-  async function artists(url) {
-    if (url === null) {
-      return Promise.resolve([]);
-    }
+  async function artists(offset, limit) {
+    const url = `https://api.spotify.com/v1/me/top/artists?time_range=${RANGE}&limit=${limit}&offset=${offset}`;
     const raw = await getUserTopArtists(url);
     if (raw.ok) {
       const jsonData = await raw.json();
       const { items, next } = jsonData;
-      console.log({ items, next });
-      return artists(next).then((nextItems) => items.concat(nextItems));
+      return items;
     }
     throw new Error("Failed to fetch top artists");
   }
-  let artistsPromise = artists(
-    `https://api.spotify.com/v1/me/top/artists?time_range=${RANGE}&limit=${LIMIT}&offset=${OFFSET}`
-  );
+  let artistsPromise = Promise.all([
+    artists(0, 49),
+    artists(49, 50),
+  ]).then((arr) => arr.flatMap((a) => a));
 </script>
 
 <main>
