@@ -1,51 +1,25 @@
 <script lang="ts">
-  import ProgressBar from "@okrad/svelte-progressbar";
-  /*
-Over what time frame the affinities are computed. 
-Valid values: long_term (calculated from several years of data and including all new data as it becomes available), 
-medium_term (approximately last 6 months), 
-short_term (approximately last 4 weeks). Default: medium_term
-*/
-  const RANGE = "long_term";
-  const LIMIT = 50;
-  const OFFSET = 0;
+  import { artists } from "./api";
 
-  // https://developer.spotify.com/documentation/web-api/reference/#endpoint-get-users-top-artists-and-tracks
-  const getUserTopTracks = () =>
-    fetch(
-      `https://api.spotify.com/v1/me/top/tracks?time_range=${RANGE}&limit=${LIMIT}&offset=${OFFSET}`,
-      {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: __myapp.env["AUTH_TOKEN"],
-        },
-      }
-    );
-
-  const getUserTopArtists = (url) =>
-    fetch(url, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: __myapp.env["AUTH_TOKEN"],
-      },
-    });
-
-  async function artists(offset, limit) {
-    const url = `https://api.spotify.com/v1/me/top/artists?time_range=${RANGE}&limit=${limit}&offset=${offset}`;
-    const raw = await getUserTopArtists(url);
-    if (raw.ok) {
-      const jsonData = await raw.json();
-      const { items, next } = jsonData;
-      return items;
+  let offset = 0;
+  let limit = 50;
+  let range = "long_term";
+  let max = 50;
+  $: url = `https://api.spotify.com/v1/me/top/artists?time_range=${range}&limit=${limit}&offset=${offset}`;
+  $: artistsPromise = artists(url).then(({ items, next }) => {
+    if (!items || items?.length === 0) {
+      throw new Error("No artists found");
     }
-    throw new Error("Failed to fetch top artists");
+    next = next;
+    return items;
+  });
+
+  function goNext() {
+    offset = offset + limit;
   }
-  let artistsPromise = Promise.all([
-    artists(0, 49),
-    artists(49, 50),
-  ]).then((arr) => arr.flatMap((a) => a));
+  function goPrev() {
+    offset = offset - limit;
+  }
 </script>
 
 <main>
@@ -56,22 +30,21 @@ short_term (approximately last 4 weeks). Default: medium_term
     <div class="artist-block-container">
       {#each artists as artist, i}
         <div class="artist-block">
-          <p>{i + 1}</p>
+          <p>{i + 1 + offset}</p>
           <img
             class="artist-image"
             src={artist.images[0].url}
             alt={artist.name}
           />
           <h2>{artist.name}</h2>
-          <span class="progress-bar">
-            <ProgressBar style="thin" series={[artist.popularity]} />
-          </span>
         </div>
       {/each}
     </div>
   {:catch error}
     <p style="color: red">{error.message}</p>
   {/await}
+  <button disabled={offset == 0} on:click={goPrev}>Previous</button>
+  <button disabled={offset + limit == max} on:click={goNext}>Next</button>
 </main>
 
 <style>
@@ -118,9 +91,6 @@ short_term (approximately last 4 weeks). Default: medium_term
     animation: fadeIn 1.5s;
   }
 
-  .progress-bar {
-    width: 100%;
-  }
   @keyframes fadeIn {
     0% {
       opacity: 0.4;
