@@ -17,6 +17,24 @@ short_term (approximately last 4 weeks). Default: medium_term
 //     }
 //   );
 
+export const rangeOptions = {
+  long: {
+    name: "Long term",
+    apiParam: "long_term",
+    desc: "Several years",
+  },
+  med: {
+    name: "Medium term",
+    apiParam: "medium_term",
+    desc: "Approximately last 6 months",
+  },
+  short: {
+    name: "Short term",
+    apiParam: "short_term",
+    desc: "Approximately last 4 weeks",
+  },
+};
+
 const getUserTopArtists = (url) =>
   fetch(url, {
     headers: {
