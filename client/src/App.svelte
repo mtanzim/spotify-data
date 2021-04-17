@@ -4,6 +4,6 @@
 </script>
 
 <main>
-  <Tracks />
-  <!-- <Artists /> -->
+  <!-- <Tracks /> -->
+  <Artists />
 </main>
