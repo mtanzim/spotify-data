@@ -6,7 +6,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light custom-nav">
   <div class="container-fluid">
-    <a href="#" class="navbar-brand">Spotify</a>
+    <a href="#" class="navbar-brand">My Spotify</a>
     <button
       class="navbar-toggler"
       type="button"
