@@ -4,9 +4,9 @@
   export let page;
 </script>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light custom-nav">
   <div class="container-fluid">
-    <a href="#" class="navbar-brand">Spotify Top Shop</a>
+    <a href="#" class="navbar-brand">Spotify</a>
     <button
       class="navbar-toggler"
       type="button"
@@ -38,6 +38,14 @@
             >Top Tracks</a
           >
         </li>
+        <li class="nav-item">
+          <a
+            href="#"
+            on:click={setPage(Page.Popularity)}
+            class="nav-link {page === Page.Popularity ? 'active' : ''}"
+            >Popularity Chart</a
+          >
+        </li>
       </ul>
     </div>
   </div>
@@ -46,5 +54,9 @@
 <style>
   a {
     text-decoration: none;
+  }
+  .custom-nav {
+    border-bottom: solid 1px #ff3e00;
+    margin-bottom: 8px;
   }
 </style>

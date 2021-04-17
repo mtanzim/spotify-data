@@ -1,8 +1,9 @@
 <script lang="ts">
   import Artists from "./components/Artists.svelte";
-  import Tracks from "./components/Tracks.svelte";
   import Navbar from "./components/Navbar.svelte";
+  import Tracks from "./components/Tracks.svelte";
   import { Page } from "./constants";
+  import Popularity from "./components/Popularity.svelte";
 
   let page = Page.Artists;
   function setPage(newPage: Page) {
@@ -16,6 +17,8 @@
     <Artists />
   {:else if page === Page.Tracks}
     <Tracks />
+  {:else if page === Page.Popularity}
+    <Popularity />
   {/if}
 </main>
 
