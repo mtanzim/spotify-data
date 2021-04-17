@@ -5,17 +5,14 @@ Valid values: long_term (calculated from several years of data and including all
 medium_term (approximately last 6 months), 
 short_term (approximately last 4 weeks). Default: medium_term
 */
-// const getUserTopTracks = () =>
-//   fetch(
-//     `https://api.spotify.com/v1/me/top/tracks?time_range=${RANGE}&limit=${LIMIT}&offset=${OFFSET}`,
-//     {
-//       headers: {
-//         Accept: "application/json",
-//         "Content-Type": "application/json",
-//         Authorization: __myapp.env["AUTH_TOKEN"],
-//       },
-//     }
-//   );
+const getUserTopTracks = (url) =>
+  fetch(url, {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: __myapp.env["AUTH_TOKEN"],
+    },
+  });
 
 export const rangeOptions = {
   long: {
@@ -44,8 +41,19 @@ const getUserTopArtists = (url) =>
     },
   });
 
-export async function artists({limit, range, offset}) {
-  const url = `https://api.spotify.com/v1/me/top/artists?time_range=${range}&limit=${limit}&offset=${offset}`
+export async function tracks({ limit, range, offset }) {
+  const url = `https://api.spotify.com/v1/me/top/tracks?time_range=${range}&limit=${limit}&offset=${offset}`;
+  const raw = await getUserTopTracks(url);
+  if (raw.ok) {
+    const jsonData = await raw.json();
+    const { items, next } = jsonData;
+    return { items, next };
+  }
+  throw new Error("Failed to fetch top tracks");
+}
+
+export async function artists({ limit, range, offset }) {
+  const url = `https://api.spotify.com/v1/me/top/artists?time_range=${range}&limit=${limit}&offset=${offset}`;
   const raw = await getUserTopArtists(url);
   if (raw.ok) {
     const jsonData = await raw.json();
