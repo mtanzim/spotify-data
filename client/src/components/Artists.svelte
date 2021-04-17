@@ -1,6 +1,7 @@
 <script lang="ts">
   import { artists, rangeOptions } from "../api";
   import RangeDropdown from "./RangeDropdown.svelte";
+  import Loader from "./Loader.svelte";
 
   let offset = 0;
   let limit = 50;
@@ -27,7 +28,7 @@
   <RangeDropdown {selectedRange} {setRange} />
 </span>
 {#await artistsPromise}
-  <p>Loading...</p>
+  <Loader />
 {:then artists}
   <div class="artist-block-container">
     {#each artists as artist, i}

@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { tracks, rangeOptions } from "../api";
+  import { rangeOptions, tracks } from "../api";
+  import Loader from "./Loader.svelte";
   import RangeDropdown from "./RangeDropdown.svelte";
 
   let offset = 0;
@@ -26,7 +27,7 @@
   <RangeDropdown {selectedRange} {setRange} />
 </span>
 {#await tracksPromise}
-  <p>Loading...</p>
+  <Loader />
 {:then tracks}
   <div class="track-block-container">
     {#each tracks as track, i}
