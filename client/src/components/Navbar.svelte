@@ -42,3 +42,9 @@
     </div>
   </div>
 </nav>
+
+<style>
+  a {
+    text-decoration: none;
+  }
+</style>

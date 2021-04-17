@@ -9,7 +9,7 @@
     limit,
     offset,
     range: selectedRange?.apiParam,
-  }).then(({ items, next }) => {
+  }).then(({ items }) => {
     if (!items || items?.length === 0) {
       throw new Error("No tracks found");
     }
@@ -21,27 +21,29 @@
   }
 </script>
 
+<span class="title">
   <h1>Top Tracks</h1>
   <RangeDropdown {selectedRange} {setRange} />
-  {#await tracksPromise}
-    <h2>...waiting</h2>
-  {:then tracks}
-    <div class="artist-block-container">
-      {#each tracks as track, i}
-        <div class="artist-block">
-          <p>{i + 1 + offset}</p>
-          <img
-            class="artist-image"
-            src={track?.album?.images?.[0]?.url}
-            alt={track.name}
-          />
-          <h2>{track.name}</h2>
-        </div>
-      {/each}
-    </div>
-  {:catch error}
-    <p style="color: red">{error.message}</p>
-  {/await}
+</span>
+{#await tracksPromise}
+  <p>Loading...</p>
+{:then tracks}
+  <div class="track-block-container">
+    {#each tracks as track, i}
+      <div class="track-block">
+        <p>{i + 1 + offset}</p>
+        <img
+          class="track-image"
+          src={track?.album?.images?.[0]?.url}
+          alt={track.name}
+        />
+        <h2>{track.name}</h2>
+      </div>
+    {/each}
+  </div>
+{:catch error}
+  <p style="color: red">{error.message}</p>
+{/await}
 
 <style>
   h1 {
@@ -56,14 +58,17 @@
     font-size: 1.5em;
     font-weight: 100;
   }
-
-  .artist-block-container {
+  .title {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-end;
+  }
+  .track-block-container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     max-height: 600px;
-    
   }
-  .artist-block {
+  .track-block {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -72,7 +77,7 @@
     padding: 8px;
     transition: width 2s linear 1s;
   }
-  .artist-image {
+  .track-image {
     max-width: 400px;
     max-height: 400px;
     height: auto;

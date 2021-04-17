@@ -22,10 +22,12 @@
   }
 </script>
 
-<h1>Top Artists</h1>
-<RangeDropdown {selectedRange} {setRange} />
+<span class="title">
+  <h1>Top Artists</h1>
+  <RangeDropdown {selectedRange} {setRange} />
+</span>
 {#await artistsPromise}
-  <h2>...waiting</h2>
+  <p>Loading...</p>
 {:then artists}
   <div class="artist-block-container">
     {#each artists as artist, i}
@@ -56,6 +58,12 @@
     color: #ff3e00;
     font-size: 2.5em;
     font-weight: 100;
+  }
+
+  .title {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-end;
   }
 
   .artist-block-container {
