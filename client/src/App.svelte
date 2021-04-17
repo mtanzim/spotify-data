@@ -3,9 +3,25 @@
 
   let offset = 0;
   let limit = 50;
-  let range = "long_term";
-  let max = 50;
-  $: url = `https://api.spotify.com/v1/me/top/artists?time_range=${range}&limit=${limit}&offset=${offset}`;
+  const rangeOptions = {
+    long: {
+      name: "Long term",
+      apiParam: "long_term",
+      desc: "Several years",
+    },
+    med: {
+      name: "Medium term",
+      apiParam: "medium_term",
+      desc: "Approximately last 6 months",
+    },
+    short: {
+      name: "Short term",
+      apiParam: "short_term",
+      desc: "Approximately last 4 weeks",
+    },
+  };
+  let selectedRange = rangeOptions.long;
+  $: url = `https://api.spotify.com/v1/me/top/artists?time_range=${selectedRange.apiParam}&limit=${limit}&offset=${offset}`;
   $: artistsPromise = artists(url).then(({ items, next }) => {
     if (!items || items?.length === 0) {
       throw new Error("No artists found");
@@ -14,16 +30,33 @@
     return items;
   });
 
-  function goNext() {
-    offset = offset + limit;
-  }
-  function goPrev() {
-    offset = offset - limit;
+  function setRange(key: string) {
+    selectedRange = rangeOptions[key];
   }
 </script>
 
 <main>
   <h1>Top Artists</h1>
+  <div class="dropdown">
+    <button
+      class="btn btn-secondary dropdown-toggle"
+      type="button"
+      id="dropdownMenuButton1"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      {selectedRange?.name}
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+      {#each Object.keys(rangeOptions) as key}
+        <li>
+          <p on:click={() => setRange(key)} class="dropdown-item">
+            {rangeOptions[key]?.name} - {rangeOptions[key]?.desc}
+          </p>
+        </li>
+      {/each}
+    </ul>
+  </div>
   {#await artistsPromise}
     <h2>...waiting</h2>
   {:then artists}
@@ -43,8 +76,6 @@
   {:catch error}
     <p style="color: red">{error.message}</p>
   {/await}
-  <button disabled={offset == 0} on:click={goPrev}>Previous</button>
-  <button disabled={offset + limit == max} on:click={goNext}>Next</button>
 </main>
 
 <style>
