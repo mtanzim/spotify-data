@@ -22,38 +22,29 @@
   }
 </script>
 
-<main>
-  <h1>Top Artists</h1>
-  <RangeDropdown {selectedRange} {setRange} />
-  {#await artistsPromise}
-    <h2>...waiting</h2>
-  {:then artists}
-    <div class="artist-block-container">
-      {#each artists as artist, i}
-        <div class="artist-block">
-          <p>{i + 1 + offset}</p>
-          <img
-            class="artist-image"
-            src={artist.images[0].url}
-            alt={artist.name}
-          />
-          <h2>{artist.name}</h2>
-        </div>
-      {/each}
-    </div>
-  {:catch error}
-    <p style="color: red">{error.message}</p>
-  {/await}
-</main>
+<h1>Top Artists</h1>
+<RangeDropdown {selectedRange} {setRange} />
+{#await artistsPromise}
+  <h2>...waiting</h2>
+{:then artists}
+  <div class="artist-block-container">
+    {#each artists as artist, i}
+      <div class="artist-block">
+        <p>{i + 1 + offset}</p>
+        <img
+          class="artist-image"
+          src={artist.images[0].url}
+          alt={artist.name}
+        />
+        <h2>{artist.name}</h2>
+      </div>
+    {/each}
+  </div>
+{:catch error}
+  <p style="color: red">{error.message}</p>
+{/await}
 
 <style>
-  main {
-    text-align: center;
-    padding: 1em;
-    max-width: 240px;
-    margin: 0 auto;
-  }
-
   h1 {
     color: #ff3e00;
     text-transform: uppercase;

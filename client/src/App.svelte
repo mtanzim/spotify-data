@@ -1,9 +1,35 @@
 <script lang="ts">
   import Artists from "./components/Artists.svelte";
   import Tracks from "./components/Tracks.svelte";
+  import Navbar from "./components/Navbar.svelte";
+  import { Page } from "./constants";
+
+  let page = Page.Artists;
+  function setPage(newPage: Page) {
+    page = newPage;
+  }
 </script>
 
 <main>
-  <!-- <Tracks /> -->
-  <Artists />
+  <Navbar {setPage} {page} />
+  {#if page === Page.Artists}
+    <Artists />
+  {:else if page === Page.Tracks}
+    <Tracks />
+  {/if}
 </main>
+
+<style>
+  main {
+    text-align: center;
+    padding: 1em;
+    max-width: 240px;
+    margin: 0 auto;
+    /* display: flex; */
+  }
+  @media (min-width: 640px) {
+    main {
+      max-width: none;
+    }
+  }
+</style>

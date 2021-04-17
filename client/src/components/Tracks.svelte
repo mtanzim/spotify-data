@@ -21,7 +21,6 @@
   }
 </script>
 
-<main>
   <h1>Top Tracks</h1>
   <RangeDropdown {selectedRange} {setRange} />
   {#await tracksPromise}
@@ -43,16 +42,8 @@
   {:catch error}
     <p style="color: red">{error.message}</p>
   {/await}
-</main>
 
 <style>
-  main {
-    text-align: center;
-    padding: 1em;
-    max-width: 240px;
-    margin: 0 auto;
-  }
-
   h1 {
     color: #ff3e00;
     text-transform: uppercase;
@@ -96,12 +87,6 @@
     }
     100% {
       opacity: 1;
-    }
-  }
-
-  @media (min-width: 640px) {
-    main {
-      max-width: none;
     }
   }
 </style>
