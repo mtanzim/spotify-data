@@ -5,8 +5,11 @@
   let offset = 0;
   let limit = 50;
   let selectedRange = rangeOptions.long;
-  $: url = `https://api.spotify.com/v1/me/top/artists?time_range=${selectedRange.apiParam}&limit=${limit}&offset=${offset}`;
-  $: artistsPromise = artists(url).then(({ items, next }) => {
+  $: artistsPromise = artists({
+    limit,
+    offset,
+    range: selectedRange?.apiParam,
+  }).then(({ items, next }) => {
     if (!items || items?.length === 0) {
       throw new Error("No artists found");
     }

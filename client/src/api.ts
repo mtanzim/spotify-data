@@ -44,7 +44,8 @@ const getUserTopArtists = (url) =>
     },
   });
 
-export async function artists(url) {
+export async function artists({limit, range, offset}) {
+  const url = `https://api.spotify.com/v1/me/top/artists?time_range=${range}&limit=${limit}&offset=${offset}`
   const raw = await getUserTopArtists(url);
   if (raw.ok) {
     const jsonData = await raw.json();
