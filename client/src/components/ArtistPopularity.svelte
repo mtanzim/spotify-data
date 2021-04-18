@@ -1,5 +1,6 @@
 <script lang="ts">
   import { artists, rangeOptions } from "../api";
+  import { authStore } from "../store";
   import Loader from "./Loader.svelte";
   import Plot from "./Plot.svelte";
   import RangeDropdown from "./RangeDropdown.svelte";
@@ -11,6 +12,7 @@
     limit,
     offset,
     range: selectedRange?.apiParam,
+    token: $authStore.token,
   }).then(({ items, next }) => {
     if (!items || items?.length === 0) {
       throw new Error("No artists found");

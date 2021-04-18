@@ -2,6 +2,7 @@
   import { artists, rangeOptions } from "../api";
   import RangeDropdown from "./RangeDropdown.svelte";
   import Loader from "./Loader.svelte";
+  import { authStore } from "../store";
 
   let offset = 0;
   let limit = 50;
@@ -10,6 +11,7 @@
     limit,
     offset,
     range: selectedRange?.apiParam,
+    token: $authStore.token,
   }).then(({ items, next }) => {
     if (!items || items?.length === 0) {
       throw new Error("No artists found");

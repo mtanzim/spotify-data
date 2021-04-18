@@ -1,5 +1,6 @@
 <script lang="ts">
   import { rangeOptions, tracks } from "../api";
+  import { authStore } from "../store";
   import Loader from "./Loader.svelte";
   import RangeDropdown from "./RangeDropdown.svelte";
 
@@ -10,6 +11,7 @@
     limit,
     offset,
     range: selectedRange?.apiParam,
+    token: $authStore.token,
   }).then(({ items }) => {
     if (!items || items?.length === 0) {
       throw new Error("No tracks found");
