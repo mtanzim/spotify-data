@@ -13,6 +13,7 @@
     offset,
     range: selectedRange?.apiParam,
     token: $authStore.token,
+    logout: authStore.logout,
   }).then(({ items }) => {
     if (!items || items?.length === 0) {
       throw new Error("No artists found");

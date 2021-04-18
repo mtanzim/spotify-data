@@ -42,24 +42,28 @@ const getUserTopArtists = (url, token) =>
     },
   });
 
-export async function tracks({ limit, range, offset, token }) {
+export async function tracks({ limit, range, offset, token, logout }) {
   const url = `https://api.spotify.com/v1/me/top/tracks?time_range=${range}&limit=${limit}&offset=${offset}`;
   const raw = await getUserTopTracks(url, token);
   if (raw.ok) {
     const jsonData = await raw.json();
     const { items, next } = jsonData;
     return { items, next };
+  } else if (raw.status === 401) {
+    logout();
   }
   throw new Error("Failed to fetch top tracks");
 }
 
-export async function artists({ limit, range, offset, token }) {
+export async function artists({ limit, range, offset, token, logout }) {
   const url = `https://api.spotify.com/v1/me/top/artists?time_range=${range}&limit=${limit}&offset=${offset}`;
   const raw = await getUserTopArtists(url, token);
   if (raw.ok) {
     const jsonData = await raw.json();
     const { items, next } = jsonData;
     return { items, next };
+  } else if (raw.status === 401) {
+    logout();
   }
   throw new Error("Failed to fetch top artists");
 }

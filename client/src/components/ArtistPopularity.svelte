@@ -8,11 +8,13 @@
   let offset = 0;
   let limit = 50;
   let selectedRange = rangeOptions.short;
+  // TODO: anyway to further DRY up the api calls?
   $: artistsPromise = artists({
     limit,
     offset,
     range: selectedRange?.apiParam,
     token: $authStore.token,
+    logout: authStore.logout,
   }).then(({ items, next }) => {
     if (!items || items?.length === 0) {
       throw new Error("No artists found");

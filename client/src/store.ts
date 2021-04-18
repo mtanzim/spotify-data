@@ -7,7 +7,7 @@ export const userData = writable(null);
 const LOCALSTORAGE_KEY = "spotify-top";
 
 function createAuthStore() {
-  const { subscribe, set, update } = writable({
+  const { subscribe, set } = writable({
     token: null,
     isLoggedIn: false,
     userData: null,
