@@ -2,8 +2,10 @@
 
 <style>
   img {
-    margin-top: 25vh;
+    margin-top: 10vh;
     animation: rotating 2s linear infinite;
+    width: 15vw;
+    height: auto;
   }
 
   @keyframes rotating {
