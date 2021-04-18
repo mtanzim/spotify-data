@@ -1,5 +1,6 @@
 export enum Page {
   Artists,
   Tracks,
-  Popularity,
+  PopularityArtist,
+  PopularityTrack,
 }

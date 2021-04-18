@@ -4,8 +4,9 @@
   import Tracks from "./components/Tracks.svelte";
   import { Page } from "./constants";
   import ArtistPopularity from "./components/ArtistPopularity.svelte";
+import TrackPopularity from "./components/TrackPopularity.svelte";
 
-  let page = Page.Popularity;
+  let page = Page.Artists;
   function setPage(newPage: Page) {
     page = newPage;
   }
@@ -17,8 +18,10 @@
     <Artists />
   {:else if page === Page.Tracks}
     <Tracks />
-  {:else if page === Page.Popularity}
+  {:else if page === Page.PopularityArtist}
     <ArtistPopularity />
+  {:else if page === Page.PopularityTrack}
+    <TrackPopularity />
   {/if}
 </main>
 

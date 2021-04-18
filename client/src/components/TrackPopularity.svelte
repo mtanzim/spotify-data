@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { artists, rangeOptions } from "../api";
+  import { rangeOptions, tracks } from "../api";
   import Loader from "./Loader.svelte";
   import Plot from "./Plot.svelte";
   import RangeDropdown from "./RangeDropdown.svelte";
@@ -7,11 +7,11 @@
   let offset = 0;
   let limit = 50;
   let selectedRange = rangeOptions.short;
-  $: artistsPromise = artists({
+  $: tracksPromise = tracks({
     limit,
     offset,
     range: selectedRange?.apiParam,
-  }).then(({ items, next }) => {
+  }).then(({ items }) => {
     if (!items || items?.length === 0) {
       throw new Error("No artists found");
     }
@@ -24,11 +24,11 @@
 </script>
 
 <span class="title">
-  <h1>Popularity of my top artists</h1>
+  <h1>Popularity of my top tracks</h1>
   <RangeDropdown {selectedRange} {setRange} />
 </span>
-<div class="block-container">
-  {#await artistsPromise}
+<div id="track-chart" class="block-container">
+  {#await tracksPromise}
     <Loader />
   {:then items}
     <Plot
@@ -56,6 +56,7 @@
   }
 
   .block-container {
+    /* display: flex; */
     height: 60vh;
     width: 70vw;
     margin: auto;

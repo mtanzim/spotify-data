@@ -5,7 +5,7 @@
 
   let offset = 0;
   let limit = 50;
-  let selectedRange = rangeOptions.long;
+  let selectedRange = rangeOptions.short;
   $: tracksPromise = tracks({
     limit,
     offset,

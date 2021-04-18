@@ -41,9 +41,17 @@
         <li class="nav-item">
           <a
             href="#"
-            on:click={setPage(Page.Popularity)}
-            class="nav-link {page === Page.Popularity ? 'active' : ''}"
-            >Popularity Chart</a
+            on:click={setPage(Page.PopularityArtist)}
+            class="nav-link {page === Page.PopularityArtist ? 'active' : ''}"
+            >Artist Popularity</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            href="#"
+            on:click={setPage(Page.PopularityTrack)}
+            class="nav-link {page === Page.PopularityTrack ? 'active' : ''}"
+            >Track Popularity</a
           >
         </li>
       </ul>
