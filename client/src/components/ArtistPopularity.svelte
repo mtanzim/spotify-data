@@ -32,7 +32,6 @@
     <Loader />
   {:then items}
     <Plot
-      {items}
       x={items.map((item) => item.name)}
       y={items.map((item) => item.popularity)}
     />

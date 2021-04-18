@@ -18,17 +18,17 @@ export const rangeOptions = {
   short: {
     name: "Short term",
     apiParam: "short_term",
-    desc: "Approximately last 4 weeks",
+    desc: "approximately the last 4 weeks",
   },
   med: {
     name: "Medium term",
     apiParam: "medium_term",
-    desc: "Approximately last 6 months",
+    desc: "approximately the last 6 months",
   },
   long: {
     name: "Long term",
     apiParam: "long_term",
-    desc: "Several years",
+    desc: "last several years",
   },
 };
 
