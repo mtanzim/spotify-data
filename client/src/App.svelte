@@ -7,6 +7,9 @@
   import Tracks from "./components/Tracks.svelte";
   import { Page } from "./constants";
   import { authStore } from "./store";
+  import { onMount } from "svelte";
+
+  onMount(() => authStore.rehydrate());
 
   let page = Page.Artists;
   function setPage(newPage: Page) {

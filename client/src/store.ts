@@ -4,6 +4,8 @@ export const token = writable("");
 export const isLoggedIn = writable(false);
 export const userData = writable(null);
 
+const LOCALSTORAGE_KEY = "spotify-top";
+
 function createAuthStore() {
   const { subscribe, set, update } = writable({
     token: null,
@@ -12,11 +14,13 @@ function createAuthStore() {
   });
 
   function login(token, userData) {
+    const parsedToken = `Bearer ${token}`;
     set({
-      token: `Bearer ${token}`,
+      token: parsedToken,
       isLoggedIn: true,
       userData,
     });
+    window.localStorage.setItem(LOCALSTORAGE_KEY, token);
   }
   function logout() {
     set({
@@ -24,12 +28,22 @@ function createAuthStore() {
       isLoggedIn: false,
       userData: null,
     });
+    window.localStorage.removeItem(LOCALSTORAGE_KEY);
+  }
+
+  function rehydrate() {
+    console.log("Checking token");
+    const curToken = window.localStorage.getItem(LOCALSTORAGE_KEY);
+    if (curToken) {
+      login(curToken, null);
+    }
   }
 
   return {
     subscribe,
     login,
     logout,
+    rehydrate,
   };
 }
 
