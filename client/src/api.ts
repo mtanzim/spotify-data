@@ -6,6 +6,7 @@ medium_term (approximately last 6 months),
 short_term (approximately last 4 weeks). Default: medium_term
 */
 
+import { v4 as uuidv4 } from "uuid";
 export const rangeOptions = {
   short: {
     name: "Short term",
@@ -66,4 +67,16 @@ export async function artists({ limit, range, offset, token, logout }) {
     logout();
   }
   throw new Error("Failed to fetch top artists");
+}
+
+export function authorize() {
+  const baseUrl = "https://accounts.spotify.com/authorize";
+  const clientId = __myapp.env["CLIENT_ID"];
+  const scopes = __myapp.env["SCOPES"];
+  const redirectUri = __myapp.env["REDIRECT_URL"];
+  const responseType = "token";
+  const state = __myapp.env["STATE"];
+
+  const url = `${baseUrl}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes}&response_type=${responseType}&state=${state}`;
+  return window.location.replace(url);
 }

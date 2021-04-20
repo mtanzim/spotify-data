@@ -1,9 +1,5 @@
 import { writable } from "svelte/store";
 
-export const token = writable("");
-export const isLoggedIn = writable(false);
-export const userData = writable(null);
-
 const LOCALSTORAGE_KEY = "spotify-top";
 
 function createAuthStore() {
