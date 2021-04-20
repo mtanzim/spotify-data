@@ -1,10 +1,12 @@
 <script lang="ts">
   import { Page } from "../constants";
+  import { authStore } from "../store";
+
   export let setPage;
   export let page;
 </script>
 
-<nav class="navbar navbar-expand-lg navbar-light custom-nav">
+<nav class="custom-nav navbar navbar-expand-lg navbar-light ">
   <div class="container-fluid">
     <a href="#" class="navbar-brand">My Spotify</a>
     <button
@@ -19,7 +21,7 @@
       <span class="navbar-toggler-icon" />
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
+      <ul class="navbar-nav mr-auto">
         <li class="nav-item">
           <a
             on:click={setPage(Page.Artists)}
@@ -52,6 +54,12 @@
             on:click={setPage(Page.PopularityTrack)}
             class="nav-link {page === Page.PopularityTrack ? 'active' : ''}"
             >Track Popularity</a
+          >
+        </li>
+        <li class="nav-item">
+          <button
+            class="btn btn-outline-danger my-2 my-sm-0"
+            on:click={authStore.logout}>Logout</button
           >
         </li>
       </ul>

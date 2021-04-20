@@ -1,5 +1,6 @@
 <script lang="ts">
   import { artists, rangeOptions } from "../api";
+  import { authStore } from "../store";
   import Loader from "./Loader.svelte";
   import Plot from "./Plot.svelte";
   import RangeDropdown from "./RangeDropdown.svelte";
@@ -7,10 +8,13 @@
   let offset = 0;
   let limit = 50;
   let selectedRange = rangeOptions.short;
+  // TODO: anyway to further DRY up the api calls?
   $: artistsPromise = artists({
     limit,
     offset,
     range: selectedRange?.apiParam,
+    token: $authStore.token,
+    logout: authStore.logout,
   }).then(({ items, next }) => {
     if (!items || items?.length === 0) {
       throw new Error("No artists found");
@@ -27,7 +31,7 @@
   <h1>Popularity of my top artists</h1>
   <RangeDropdown {selectedRange} {setRange} />
 </span>
-<div class="block-container">
+<div>
   {#await artistsPromise}
     <Loader />
   {:then items}
@@ -52,13 +56,6 @@
     display: flex;
     flex-direction: column;
     align-content: flex-end;
-  }
-
-  .block-container {
-    height: 60vh;
-    width: 70vw;
-    margin: auto;
-    animation: fadeIn 1.5s;
   }
 
   @keyframes fadeIn {

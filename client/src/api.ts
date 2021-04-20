@@ -5,14 +5,6 @@ Valid values: long_term (calculated from several years of data and including all
 medium_term (approximately last 6 months), 
 short_term (approximately last 4 weeks). Default: medium_term
 */
-const getUserTopTracks = (url) =>
-  fetch(url, {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: __myapp.env["AUTH_TOKEN"],
-    },
-  });
 
 export const rangeOptions = {
   short: {
@@ -32,33 +24,46 @@ export const rangeOptions = {
   },
 };
 
-const getUserTopArtists = (url) =>
+const getUserTopTracks = (url, token) =>
   fetch(url, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: __myapp.env["AUTH_TOKEN"],
+      Authorization: token,
     },
   });
 
-export async function tracks({ limit, range, offset }) {
+const getUserTopArtists = (url, token) =>
+  fetch(url, {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: token,
+    },
+  });
+
+export async function tracks({ limit, range, offset, token, logout }) {
   const url = `https://api.spotify.com/v1/me/top/tracks?time_range=${range}&limit=${limit}&offset=${offset}`;
-  const raw = await getUserTopTracks(url);
+  const raw = await getUserTopTracks(url, token);
   if (raw.ok) {
     const jsonData = await raw.json();
     const { items, next } = jsonData;
     return { items, next };
+  } else if (raw.status === 401) {
+    logout();
   }
   throw new Error("Failed to fetch top tracks");
 }
 
-export async function artists({ limit, range, offset }) {
+export async function artists({ limit, range, offset, token, logout }) {
   const url = `https://api.spotify.com/v1/me/top/artists?time_range=${range}&limit=${limit}&offset=${offset}`;
-  const raw = await getUserTopArtists(url);
+  const raw = await getUserTopArtists(url, token);
   if (raw.ok) {
     const jsonData = await raw.json();
     const { items, next } = jsonData;
     return { items, next };
+  } else if (raw.status === 401) {
+    logout();
   }
   throw new Error("Failed to fetch top artists");
 }

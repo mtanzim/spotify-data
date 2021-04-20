@@ -1,5 +1,6 @@
 <script lang="ts">
   import { rangeOptions, tracks } from "../api";
+  import { authStore } from "../store";
   import Loader from "./Loader.svelte";
   import Plot from "./Plot.svelte";
   import RangeDropdown from "./RangeDropdown.svelte";
@@ -11,6 +12,8 @@
     limit,
     offset,
     range: selectedRange?.apiParam,
+    token: $authStore.token,
+    logout: authStore.logout,
   }).then(({ items }) => {
     if (!items || items?.length === 0) {
       throw new Error("No artists found");
@@ -27,7 +30,7 @@
   <h1>Popularity of my top tracks</h1>
   <RangeDropdown {selectedRange} {setRange} />
 </span>
-<div id="track-chart" class="block-container">
+<div id="track-chart">
   {#await tracksPromise}
     <Loader />
   {:then items}
@@ -53,14 +56,6 @@
     display: flex;
     flex-direction: column;
     align-content: flex-end;
-  }
-
-  .block-container {
-    /* display: flex; */
-    height: 60vh;
-    width: 70vw;
-    margin: auto;
-    animation: fadeIn 1.5s;
   }
 
   @keyframes fadeIn {
