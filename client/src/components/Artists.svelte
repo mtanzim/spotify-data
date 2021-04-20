@@ -26,10 +26,10 @@
   }
 </script>
 
-<span class="title">
+<div>
   <h1>Top Artists</h1>
   <RangeDropdown {selectedRange} {setRange} />
-</span>
+</div>
 {#await artistsPromise}
   <Loader />
 {:then artists}
@@ -64,29 +64,18 @@
     font-weight: 100;
   }
 
-  .title {
-    display: flex;
-    flex-direction: column;
-    align-content: flex-end;
-  }
-
   .artist-block-container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   }
   .artist-block {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
     height: auto;
-    /* border: solid 1px black; */
     margin: 12px;
-    padding: 8px;
-    transition: width 2s linear 1s;
+    padding: 12px;
   }
   .artist-image {
-    max-width: 400px;
-    max-height: 400px;
+    max-width: 320px;
+    max-height: 320px;
     height: auto;
     width: auto;
     object-fit: contain;
@@ -102,6 +91,4 @@
     }
   }
 
-  @media (min-width: 640px) {
-  }
 </style>

@@ -25,10 +25,10 @@
   }
 </script>
 
-<span class="title">
+<div>
   <h1>Top Tracks</h1>
   <RangeDropdown {selectedRange} {setRange} />
-</span>
+</div>
 {#await tracksPromise}
   <Loader />
 {:then tracks}
@@ -62,28 +62,19 @@
     font-size: 1.5em;
     font-weight: 100;
   }
-  .title {
-    display: flex;
-    flex-direction: column;
-    align-content: flex-end;
-  }
+
   .track-block-container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    max-height: 600px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   }
   .track-block {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
     height: auto;
     margin: 12px;
-    padding: 8px;
-    transition: width 2s linear 1s;
+    padding: 12px;
   }
   .track-image {
-    max-width: 400px;
-    max-height: 400px;
+    max-width: 320px;
+    max-height: 320px;
     height: auto;
     width: auto;
     object-fit: contain;
