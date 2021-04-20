@@ -9,7 +9,9 @@
   import { authStore } from "./store";
   import { onMount } from "svelte";
 
-  onMount(() => authStore.rehydrate());
+  onMount(() => {
+    authStore.rehydrate();
+  });
 
   let page = Page.Artists;
   function setPage(newPage: Page) {
