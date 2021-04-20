@@ -17,6 +17,7 @@ function createAuthStore() {
       userData,
     });
     window.localStorage.setItem(LOCALSTORAGE_KEY, token);
+    window.location.href = "#";
   }
   function logout() {
     set({
