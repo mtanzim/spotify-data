@@ -30,7 +30,7 @@
   <h1>Popularity of my top tracks</h1>
   <RangeDropdown {selectedRange} {setRange} />
 </span>
-<div id="track-chart" class="block-container">
+<div id="track-chart">
   {#await tracksPromise}
     <Loader />
   {:then items}
@@ -56,14 +56,6 @@
     display: flex;
     flex-direction: column;
     align-content: flex-end;
-  }
-
-  .block-container {
-    /* display: flex; */
-    height: 60vh;
-    width: 70vw;
-    margin: auto;
-    animation: fadeIn 1.5s;
   }
 
   @keyframes fadeIn {

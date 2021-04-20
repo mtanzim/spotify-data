@@ -31,7 +31,7 @@
   <h1>Popularity of my top artists</h1>
   <RangeDropdown {selectedRange} {setRange} />
 </span>
-<div class="block-container">
+<div>
   {#await artistsPromise}
     <Loader />
   {:then items}
@@ -56,13 +56,6 @@
     display: flex;
     flex-direction: column;
     align-content: flex-end;
-  }
-
-  .block-container {
-    height: 60vh;
-    width: 70vw;
-    margin: auto;
-    animation: fadeIn 1.5s;
   }
 
   @keyframes fadeIn {
