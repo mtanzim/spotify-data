@@ -26,7 +26,7 @@
   }
 </script>
 
-<div>
+<div class="container">
   <h1>Top Artists</h1>
   <RangeDropdown {selectedRange} {setRange} />
 </div>
@@ -70,7 +70,6 @@
   }
   .artist-block {
     height: auto;
-    margin: 12px;
     padding: 12px;
   }
   .artist-image {
