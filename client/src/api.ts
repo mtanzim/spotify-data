@@ -10,12 +10,12 @@ export const rangeOptions = {
   short: {
     name: "Short term",
     apiParam: "short_term",
-    desc: "approximately the last 4 weeks",
+    desc: "last 4 weeks",
   },
   med: {
     name: "Medium term",
     apiParam: "medium_term",
-    desc: "approximately the last 6 months",
+    desc: "last 6 months",
   },
   long: {
     name: "Long term",

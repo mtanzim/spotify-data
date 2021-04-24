@@ -3,6 +3,9 @@
   import RangeDropdown from "./RangeDropdown.svelte";
   import Loader from "./Loader.svelte";
   import { authStore } from "../store";
+  import InfoCard from "./InfoCard.svelte";
+
+  const PAGE_DESC = `These are the artists you've been listening to the most. Select from the dropdown to change the time range.`;
 
   let offset = 0;
   let limit = 50;
@@ -26,9 +29,12 @@
   }
 </script>
 
-<div class="container">
-  <h1>Top Artists</h1>
-  <RangeDropdown {selectedRange} {setRange} />
+<div class="container-fluid">
+  <InfoCard>
+    <h1>Top Artists</h1>
+    <p>{PAGE_DESC}</p>
+    <RangeDropdown {selectedRange} {setRange} />
+  </InfoCard>
 </div>
 {#await artistsPromise}
   <Loader />
@@ -89,5 +95,4 @@
       opacity: 1;
     }
   }
-
 </style>

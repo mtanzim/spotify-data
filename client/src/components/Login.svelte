@@ -30,7 +30,7 @@
     font-weight: 100;
   }
   .home-logo {
-    width: 60vw;
-    height: auto;
+    height: 30vh;
+    width: auto;
   }
 </style>
