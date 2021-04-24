@@ -25,6 +25,10 @@
   function setRange(key: string) {
     selectedRange = rangeOptions[key];
   }
+
+  function getSpotifyUrl(artist) {
+    return artist?.external_urls?.spotify;
+  }
 </script>
 
 <div class="container-fluid">
@@ -44,11 +48,18 @@
     {#each artists as artist, i}
       <div class="artist-block">
         <p>{i + 1 + offset}</p>
-        <img
-          class="artist-image"
-          src={artist.images[0].url}
-          alt={artist.name}
-        />
+
+        <a
+          href={getSpotifyUrl(artist)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            class="artist-image"
+            src={artist.images[0].url}
+            alt={artist.name}
+          />
+        </a>
         <h2>{artist.name}</h2>
       </div>
     {/each}

@@ -28,6 +28,10 @@
   function getArtists(track) {
     return track?.artists?.map((a) => a.name).join(", ");
   }
+
+  function getSpotifyUrl(track) {
+    return track?.external_urls?.spotify;
+  }
 </script>
 
 <div>
@@ -47,11 +51,17 @@
     {#each tracks as track, i}
       <div class="track-block">
         <p>{i + 1 + offset}</p>
-        <img
-          class="track-image"
-          src={track?.album?.images?.[0]?.url}
-          alt={track.name}
-        />
+        <a
+          href={getSpotifyUrl(track)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            class="track-image"
+            src={track?.album?.images?.[0]?.url}
+            alt={track.name}
+          />
+        </a>
         <h2>{track.name} - {getArtists(track)}</h2>
       </div>
     {/each}
