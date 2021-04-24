@@ -31,7 +31,7 @@
 
 <style>
   .block-container {
-    height: 70vh;
+    height: 60vh;
     width: 100%;
     margin: auto;
     animation: fadeIn 1.5s;

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { artists, rangeOptions } from "../api";
   import { authStore } from "../store";
+  import InfoCard from "./InfoCard.svelte";
   import Loader from "./Loader.svelte";
   import Plot from "./Plot.svelte";
   import RangeDropdown from "./RangeDropdown.svelte";
@@ -27,10 +28,17 @@
   }
 </script>
 
-<span class="title">
-  <h1>Popularity of my top artists</h1>
-  <RangeDropdown {selectedRange} {setRange} />
-</span>
+<div class="container-fluid">
+  <InfoCard>
+    <h1>Popularity of my top tracks</h1>
+    <p>
+      This chart plots the popularity of your top artists, according to Spotify.
+      Each song is rated on a scale of 0 - 100. They are sorted according to
+      your ranking. Select from the dropdown to change the time range.
+    </p>
+    <RangeDropdown {selectedRange} {setRange} />
+  </InfoCard>
+</div>
 <div>
   {#await artistsPromise}
     <Loader />
