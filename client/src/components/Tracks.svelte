@@ -1,6 +1,7 @@
 <script lang="ts">
   import { rangeOptions, tracks } from "../api";
   import { authStore } from "../store";
+  import InfoCard from "./InfoCard.svelte";
   import Loader from "./Loader.svelte";
   import RangeDropdown from "./RangeDropdown.svelte";
 
@@ -23,11 +24,21 @@
   function setRange(key: string) {
     selectedRange = rangeOptions[key];
   }
+
+  function getArtists(track) {
+    return track?.artists?.map((a) => a.name).join(", ");
+  }
 </script>
 
 <div>
-  <h1>Top Tracks</h1>
-  <RangeDropdown {selectedRange} {setRange} />
+  <InfoCard>
+    <h1>Top Tracks</h1>
+    <p>
+      These are the songs you've been listening to the most. Select from the
+      dropdown to change the time range.
+    </p>
+    <RangeDropdown {selectedRange} {setRange} />
+  </InfoCard>
 </div>
 {#await tracksPromise}
   <Loader />
@@ -41,7 +52,7 @@
           src={track?.album?.images?.[0]?.url}
           alt={track.name}
         />
-        <h2>{track.name}</h2>
+        <h2>{track.name} - {getArtists(track)}</h2>
       </div>
     {/each}
   </div>
@@ -59,7 +70,7 @@
 
   h2 {
     color: #ff3e00;
-    font-size: 1.5em;
+    font-size: 2em;
     font-weight: 100;
   }
 

@@ -5,8 +5,6 @@
   import { authStore } from "../store";
   import InfoCard from "./InfoCard.svelte";
 
-  const PAGE_DESC = `These are the artists you've been listening to the most. Select from the dropdown to change the time range.`;
-
   let offset = 0;
   let limit = 50;
   let selectedRange = rangeOptions.short;
@@ -32,7 +30,10 @@
 <div class="container-fluid">
   <InfoCard>
     <h1>Top Artists</h1>
-    <p>{PAGE_DESC}</p>
+    <p>
+      These are the artists you've been listening to the most. Select from the
+      dropdown to change the time range.
+    </p>
     <RangeDropdown {selectedRange} {setRange} />
   </InfoCard>
 </div>
