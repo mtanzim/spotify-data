@@ -16,11 +16,21 @@
     </p>
   </div>
 </div>
-<img src="favicon.png" />
+<img class="home-logo" src="favicon.png" />
 <p class="lead">Please log into Spotify to continue.</p>
 <button class="btn btn-outline-primary" on:click={authStore.authorize}
   >Login</button
 >
 
 <style>
+  h1 {
+    color: #ff3e00;
+    text-transform: uppercase;
+    font-size: 4em;
+    font-weight: 100;
+  }
+  .home-logo {
+    width: 60vw;
+    height: auto;
+  }
 </style>
