@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { authStore } from "../store";
+  import { getMyProfile } from "../api";
+
   export let tracks: PlaylistTrack;
   export let initName = "";
   export let initDesc = "";
@@ -26,11 +29,16 @@
   }
 
   async function createPlaylist() {
+    const { userId } = await getMyProfile({
+      token: $authStore.token,
+      logout: authStore.logout,
+    });
     console.log({
       playlistName,
       playlistDesc,
       tracksWithChecks,
       selectedTrackURI: getSelectedTrackURI(),
+      userId,
     });
   }
 </script>

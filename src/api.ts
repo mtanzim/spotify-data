@@ -60,6 +60,20 @@ export async function artists({ limit, range, offset, token, logout }) {
   throw new Error("Failed to fetch top artists");
 }
 
+export async function getMyProfile({ token, logout }) {
+  const url = "https://api.spotify.com/v1/me";
+  const raw = await makeApiCall(url, token);
+
+  if (raw.ok) {
+    const jsonData = await raw.json();
+    const { id } = jsonData;
+    return { userId: id };
+  } else if (raw.status === 401) {
+    logout();
+  }
+  throw new Error("Failed to fetch top artists");
+}
+
 export async function createPlaylist({
   name,
   description,
@@ -69,12 +83,13 @@ export async function createPlaylist({
   logout,
 }) {
   const url = `	https://api.spotify.com/v1/users/${userId}/playlists`;
-  const raw = await makeApiCall(url, token);
   const body = {
     name,
     description,
     public: isPublic,
   };
+  const raw = await makeApiCall(url, token, body);
+
   if (raw.ok) {
     const jsonData = await raw.json();
     const {
