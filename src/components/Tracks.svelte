@@ -5,6 +5,8 @@
   import Loader from "./Loader.svelte";
   import RangeDropdown from "./RangeDropdown.svelte";
 
+  const MAX_TRACK_NAME_LEN = 60;
+
   let offset = 0;
   let limit = 50;
   let selectedRange = rangeOptions.short;
@@ -31,6 +33,14 @@
 
   function getSpotifyUrl(track) {
     return track?.external_urls?.spotify;
+  }
+
+  function constructTrackString(track) {
+    const trackAndArtists = `${track.name} - ${getArtists(track)}`;
+    if (trackAndArtists.length > MAX_TRACK_NAME_LEN) {
+      return `${trackAndArtists.slice(0, MAX_TRACK_NAME_LEN)}...`;
+    }
+    return trackAndArtists;
   }
 </script>
 
@@ -62,7 +72,7 @@
             alt={track.name}
           />
         </a>
-        <h2>{track.name} - {getArtists(track)}</h2>
+        <h2>{constructTrackString(track)}</h2>
       </div>
     {/each}
   </div>
