@@ -24,6 +24,14 @@
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
           <a
+            href="#"
+            on:click={setPage(Page.Tracks)}
+            class="nav-link {page === Page.Tracks ? 'active' : ''}"
+            >Top Tracks</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
             on:click={setPage(Page.Artists)}
             class="nav-link {page === Page.Artists ? 'active' : ''}"
             aria-current="page"
@@ -31,14 +39,6 @@
           >
             Top artists
           </a>
-        </li>
-        <li class="nav-item">
-          <a
-            href="#"
-            on:click={setPage(Page.Tracks)}
-            class="nav-link {page === Page.Tracks ? 'active' : ''}"
-            >Top Tracks</a
-          >
         </li>
         <li class="nav-item">
           <a

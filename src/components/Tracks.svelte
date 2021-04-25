@@ -35,6 +35,14 @@
     return track?.external_urls?.spotify;
   }
 
+  function getTrackUriCSV(tracks) {
+    const trackUris = tracks?.reduce(
+      (acc, track) => ({ ...acc, [track.id]: track?.uri }),
+      {}
+    );
+    alert(JSON.stringify(trackUris));
+  }
+
   function constructTrackString(track) {
     const trackAndArtists = `${track.name} - ${getArtists(track)}`;
     if (trackAndArtists.length > MAX_TRACK_NAME_LEN) {
@@ -52,6 +60,15 @@
       dropdown to change the time range.
     </p>
     <RangeDropdown {selectedRange} {setRange} />
+    <span>
+      {#await tracksPromise then tracks}
+        <button
+          type="button"
+          class="btn btn-outline-dark btn-sm"
+          on:click={() => getTrackUriCSV(tracks)}>Make it a playlist!</button
+        >
+      {/await}
+    </span>
   </InfoCard>
 </div>
 {#await tracksPromise}
