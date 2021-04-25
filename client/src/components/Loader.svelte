@@ -4,8 +4,14 @@
   img {
     margin-top: 10vh;
     animation: rotating 2s linear infinite;
-    width: 15vw;
+    width: 20vw;
     height: auto;
+  }
+
+  @media (max-width: 756px) {
+    img {
+      width: 60vw;
+    }
   }
 
   @keyframes rotating {

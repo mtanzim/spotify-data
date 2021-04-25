@@ -3,6 +3,7 @@
   import RangeDropdown from "./RangeDropdown.svelte";
   import Loader from "./Loader.svelte";
   import { authStore } from "../store";
+  import InfoCard from "./InfoCard.svelte";
 
   let offset = 0;
   let limit = 50;
@@ -24,11 +25,21 @@
   function setRange(key: string) {
     selectedRange = rangeOptions[key];
   }
+
+  function getSpotifyUrl(artist) {
+    return artist?.external_urls?.spotify;
+  }
 </script>
 
-<div>
-  <h1>Top Artists</h1>
-  <RangeDropdown {selectedRange} {setRange} />
+<div class="container-fluid">
+  <InfoCard>
+    <h1>Top Artists</h1>
+    <p>
+      These are the artists you've been listening to the most. Select from the
+      dropdown to change the time range.
+    </p>
+    <RangeDropdown {selectedRange} {setRange} />
+  </InfoCard>
 </div>
 {#await artistsPromise}
   <Loader />
@@ -37,11 +48,18 @@
     {#each artists as artist, i}
       <div class="artist-block">
         <p>{i + 1 + offset}</p>
-        <img
-          class="artist-image"
-          src={artist.images[0].url}
-          alt={artist.name}
-        />
+
+        <a
+          href={getSpotifyUrl(artist)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            class="artist-image"
+            src={artist.images[0].url}
+            alt={artist.name}
+          />
+        </a>
         <h2>{artist.name}</h2>
       </div>
     {/each}
@@ -70,7 +88,6 @@
   }
   .artist-block {
     height: auto;
-    margin: 12px;
     padding: 12px;
   }
   .artist-image {
@@ -90,5 +107,4 @@
       opacity: 1;
     }
   }
-
 </style>

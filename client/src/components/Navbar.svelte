@@ -58,9 +58,11 @@
         </li>
         <li class="nav-item">
           <button
-            class="btn btn-outline-danger my-2 my-sm-0"
-            on:click={authStore.logout}>Logout</button
+            class="btn btn-outline-danger my-2 my-sm-0 ml-12"
+            on:click={authStore.logout}
           >
+            <i class="fas fa-sign-out-alt" />
+          </button>
         </li>
       </ul>
     </div>
