@@ -3,6 +3,7 @@
   import {
     getMyProfile,
     createPlaylist as createSpotifyPlaylist,
+    addTracksToPlaylist,
   } from "../api";
 
   export let tracks: PlaylistTrack;
@@ -45,14 +46,23 @@
       token: $authStore.token,
       logout: authStore.logout,
     });
+
+    const selectedTrackUri = getSelectedTrackURI();
+    const { snapshotId } = await addTracksToPlaylist({
+      logout: authStore.logout,
+      playlistId,
+      uris: selectedTrackUri,
+      token: $authStore.token,
+    });
     console.log({
       playlistName,
       playlistDesc,
       tracksWithChecks,
-      selectedTrackURI: getSelectedTrackURI(),
+      selectedTrackUri,
       userId,
       playlistId,
       spotifyUri,
+      snapshotId,
     });
   }
 </script>
