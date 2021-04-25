@@ -24,14 +24,15 @@ export const rangeOptions = {
   },
 };
 
-const makeApiCall = (url, token, body = null) =>
+const makeApiCall = (url, token, method = "GET", body = undefined) =>
   fetch(url, {
+    method,
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
       Authorization: token,
     },
-    body,
+    body: body ? JSON.stringify(body) : undefined,
   });
 
 export async function tracks({ limit, range, offset, token, logout }) {
@@ -88,7 +89,7 @@ export async function createPlaylist({
     description,
     public: isPublic,
   };
-  const raw = await makeApiCall(url, token, body);
+  const raw = await makeApiCall(url, token, "POST", body);
 
   if (raw.ok) {
     const jsonData = await raw.json();

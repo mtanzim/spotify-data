@@ -1,6 +1,9 @@
 <script lang="ts">
   import { authStore } from "../store";
-  import { getMyProfile } from "../api";
+  import {
+    getMyProfile,
+    createPlaylist as createSpotifyPlaylist,
+  } from "../api";
 
   export let tracks: PlaylistTrack;
   export let initName = "";
@@ -33,12 +36,23 @@
       token: $authStore.token,
       logout: authStore.logout,
     });
+
+    const { playlistId, spotifyUri } = await createSpotifyPlaylist({
+      name: playlistName,
+      description: playlistDesc,
+      isPublic: isPlaylistPublic,
+      userId,
+      token: $authStore.token,
+      logout: authStore.logout,
+    });
     console.log({
       playlistName,
       playlistDesc,
       tracksWithChecks,
       selectedTrackURI: getSelectedTrackURI(),
       userId,
+      playlistId,
+      spotifyUri,
     });
   }
 </script>
