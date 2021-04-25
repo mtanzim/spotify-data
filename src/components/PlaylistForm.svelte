@@ -1,13 +1,15 @@
 <script lang="ts">
   export let tracks: PlaylistTrack;
+  export let initName = "";
+  export let initDesc = "";
   interface PlaylistTracksValue {
     name: string;
     uri: string;
   }
   type PlaylistTrack = { [k: string]: PlaylistTracksValue };
 
-  let playlistName;
-  let playlistDesc;
+  let playlistName = initName;
+  let playlistDesc = initDesc;
   let isPlaylistPublic = true;
   let tracksWithChecks = Object.keys(tracks).reduce(
     (acc, trackKey) => ({
@@ -16,6 +18,21 @@
     }),
     {}
   );
+
+  function getSelectedTrackURI() {
+    return Object.keys(tracksWithChecks)
+      .filter((key) => !!tracksWithChecks[key])
+      .map((selectedTrackId) => tracks[selectedTrackId]?.uri);
+  }
+
+  function createPlaylist() {
+    console.log({
+      playlistName,
+      playlistDesc,
+      tracksWithChecks,
+      selectedTrackURI: getSelectedTrackURI(),
+    });
+  }
 </script>
 
 <div class="row custom-row justify-content-center">
@@ -51,7 +68,7 @@
         <label class="form-check-label" for="isPublic">Public Playlist</label>
       </div>
     </form>
-    <button class="btn btn-primary">Save</button>
+    <button on:click={createPlaylist} class="btn btn-primary">Save</button>
   </div>
   <div class="col-md-4 col-xs-12">
     <p>The following songs will be in the playlist</p>
