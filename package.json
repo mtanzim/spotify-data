@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "rollup -c",
-    "dev": "rollup -c -w",
+    "dev": "cp .env.local .env && rollup -c -w",
     "start": "sirv public --no-clear",
     "validate": "svelte-check"
   },
