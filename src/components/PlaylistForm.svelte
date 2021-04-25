@@ -25,7 +25,7 @@
       .map((selectedTrackId) => tracks[selectedTrackId]?.uri);
   }
 
-  function createPlaylist() {
+  async function createPlaylist() {
     console.log({
       playlistName,
       playlistDesc,

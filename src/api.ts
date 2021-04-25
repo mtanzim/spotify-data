@@ -24,27 +24,19 @@ export const rangeOptions = {
   },
 };
 
-const getUserTopTracks = (url, token) =>
+const makeApiCall = (url, token, body = null) =>
   fetch(url, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
       Authorization: token,
     },
-  });
-
-const getUserTopArtists = (url, token) =>
-  fetch(url, {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: token,
-    },
+    body,
   });
 
 export async function tracks({ limit, range, offset, token, logout }) {
   const url = `https://api.spotify.com/v1/me/top/tracks?time_range=${range}&limit=${limit}&offset=${offset}`;
-  const raw = await getUserTopTracks(url, token);
+  const raw = await makeApiCall(url, token);
   if (raw.ok) {
     const jsonData = await raw.json();
     const { items, next } = jsonData;
@@ -57,11 +49,39 @@ export async function tracks({ limit, range, offset, token, logout }) {
 
 export async function artists({ limit, range, offset, token, logout }) {
   const url = `https://api.spotify.com/v1/me/top/artists?time_range=${range}&limit=${limit}&offset=${offset}`;
-  const raw = await getUserTopArtists(url, token);
+  const raw = await makeApiCall(url, token);
   if (raw.ok) {
     const jsonData = await raw.json();
     const { items, next } = jsonData;
     return { items, next };
+  } else if (raw.status === 401) {
+    logout();
+  }
+  throw new Error("Failed to fetch top artists");
+}
+
+export async function createPlaylist({
+  name,
+  description,
+  isPublic,
+  userId,
+  token,
+  logout,
+}) {
+  const url = `	https://api.spotify.com/v1/users/${userId}/playlists`;
+  const raw = await makeApiCall(url, token);
+  const body = {
+    name,
+    description,
+    public: isPublic,
+  };
+  if (raw.ok) {
+    const jsonData = await raw.json();
+    const {
+      id,
+      external_urls: { spotify },
+    } = jsonData;
+    return { playlistId: id, spotifyUri: spotify };
   } else if (raw.status === 401) {
     logout();
   }
