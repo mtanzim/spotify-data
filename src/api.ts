@@ -71,7 +71,7 @@ export async function getMyProfile({ token, logout }) {
   } else if (raw.status === 401) {
     logout();
   }
-  throw new Error("Failed to fetch top artists");
+  throw new Error("Failed to get my profile");
 }
 
 export async function createPlaylist({
@@ -100,5 +100,5 @@ export async function createPlaylist({
   } else if (raw.status === 401) {
     logout();
   }
-  throw new Error("Failed to fetch top artists");
+  throw new Error("Failed to create a playlist.");
 }
