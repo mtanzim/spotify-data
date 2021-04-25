@@ -9,6 +9,7 @@
   export let tracks: PlaylistTrack;
   export let initName = "";
   export let initDesc = "";
+
   interface PlaylistTracksValue {
     name: string;
     uri: string;
@@ -25,6 +26,8 @@
     }),
     {}
   );
+  let status = "";
+  let error = "";
 
   function getSelectedTrackURI() {
     return Object.keys(tracksWithChecks)
@@ -33,10 +36,12 @@
   }
 
   async function createPlaylist() {
+    status = "Staring";
     const { userId } = await getMyProfile({
       token: $authStore.token,
       logout: authStore.logout,
     });
+    status = "Got user";
 
     const { playlistId, spotifyUri } = await createSpotifyPlaylist({
       name: playlistName,
@@ -46,6 +51,7 @@
       token: $authStore.token,
       logout: authStore.logout,
     });
+    status = "Made playlist";
 
     const selectedTrackUri = getSelectedTrackURI();
     const { snapshotId } = await addTracksToPlaylist({
@@ -54,6 +60,7 @@
       uris: selectedTrackUri,
       token: $authStore.token,
     });
+    status = "Added song to playlist! Success.";
     console.log({
       playlistName,
       playlistDesc,
@@ -101,6 +108,7 @@
       </div>
     </form>
     <button on:click={createPlaylist} class="btn btn-primary">Save</button>
+    <p>{status}</p>
   </div>
   <div class="col-md-4 col-xs-12">
     <p>The following songs will be in the playlist</p>
