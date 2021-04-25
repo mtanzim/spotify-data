@@ -52,7 +52,7 @@
   }
 </script>
 
-<div>
+<div class="container-fluid">
   <InfoCard>
     <h1>Top Tracks</h1>
     <p>
