@@ -4,12 +4,19 @@
   import InfoCard from "./InfoCard.svelte";
   import Loader from "./Loader.svelte";
   import RangeDropdown from "./RangeDropdown.svelte";
+  import PlaylistForm from "./PlaylistForm.svelte";
 
   const MAX_TRACK_NAME_LEN = 60;
 
   let offset = 0;
   let limit = 50;
   let selectedRange = rangeOptions.short;
+  let isMakingPlaylist = false;
+
+  function toggleMakingPlaylist() {
+    isMakingPlaylist = !isMakingPlaylist;
+  }
+
   $: tracksPromise = tracks({
     limit,
     offset,
@@ -35,20 +42,27 @@
     return track?.external_urls?.spotify;
   }
 
-  function getTrackUriCSV(tracks) {
-    const trackUris = tracks?.reduce(
-      (acc, track) => ({ ...acc, [track.id]: track?.uri }),
-      {}
-    );
-    alert(JSON.stringify(trackUris));
+  function getFullTrackString(track) {
+    return `${track.name} - ${getArtists(track)}`;
   }
 
   function constructTrackString(track) {
-    const trackAndArtists = `${track.name} - ${getArtists(track)}`;
+    const trackAndArtists = getFullTrackString(track);
     if (trackAndArtists.length > MAX_TRACK_NAME_LEN) {
       return `${trackAndArtists.slice(0, MAX_TRACK_NAME_LEN)}...`;
     }
     return trackAndArtists;
+  }
+
+  function getTrackUriCSV(tracks) {
+    const trackUris = tracks?.reduce(
+      (acc, track) => ({
+        ...acc,
+        [track.id]: { uri: track?.uri, name: getFullTrackString(track) },
+      }),
+      {}
+    );
+    return trackUris;
   }
 </script>
 
@@ -65,8 +79,11 @@
         <button
           type="button"
           class="btn btn-outline-dark btn-sm"
-          on:click={() => getTrackUriCSV(tracks)}>Make it a playlist!</button
+          on:click={toggleMakingPlaylist}>Make it a playlist!</button
         >
+        {#if isMakingPlaylist}
+          <PlaylistForm tracks={getTrackUriCSV(tracks)} />
+        {/if}
       {/await}
     </span>
   </InfoCard>
