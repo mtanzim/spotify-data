@@ -1,4 +1,4 @@
-<img src="favicon.png" />
+<img alt="favicon" src="favicon.png" />
 
 <style>
   img {
