@@ -30,8 +30,27 @@
     return items;
   });
 
+  const baseName = "My most played songs";
+  let playlistName = baseName;
+  $: {
+    switch (selectedRange) {
+      case rangeOptions.short:
+        playlistName = `${baseName}: short term`;
+        break;
+      case rangeOptions.long:
+        playlistName = `${baseName}: long term`;
+        break;
+      case rangeOptions.med:
+        playlistName = `${baseName}: medium term`;
+        break;
+      default:
+        playlistName = baseName;
+    }
+  }
+
   function setRange(key: string) {
     selectedRange = rangeOptions[key];
+    isMakingPlaylist = false;
   }
 
   function getArtists(track) {
@@ -78,11 +97,17 @@
       {#await tracksPromise then tracks}
         <button
           type="button"
-          class="btn btn-outline-dark btn-sm"
-          on:click={toggleMakingPlaylist}>Make it a playlist!</button
+          class={`btn btn-outline-dark btn-sm ${
+            isMakingPlaylist ? "active" : ""
+          }`}
+          on:click={toggleMakingPlaylist}>Save as a playlist!</button
         >
         {#if isMakingPlaylist}
-          <PlaylistForm tracks={getTrackUriCSV(tracks)} />
+          <PlaylistForm
+            tracks={getTrackUriCSV(tracks)}
+            closeForm={() => (isMakingPlaylist = false)}
+            initName={playlistName}
+          />
         {/if}
       {/await}
     </span>

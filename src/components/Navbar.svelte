@@ -61,7 +61,7 @@
             class="btn btn-outline-danger my-2 my-sm-0 ml-12"
             on:click={authStore.logout}
           >
-            <i class="fas fa-sign-out-alt" />
+            Logout
           </button>
         </li>
       </ul>

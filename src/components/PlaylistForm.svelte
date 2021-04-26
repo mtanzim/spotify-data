@@ -7,8 +7,8 @@
   } from "../api";
 
   export let tracks: PlaylistTrack;
+  export let closeForm: () => void;
   export let initName = "";
-  export let initDesc = "";
 
   interface PlaylistTracksValue {
     name: string;
@@ -17,7 +17,7 @@
   type PlaylistTrack = { [k: string]: PlaylistTracksValue };
 
   let playlistName = initName;
-  let playlistDesc = initDesc;
+  let playlistDesc = "";
   let isPlaylistPublic = true;
   let tracksWithChecks = Object.keys(tracks).reduce(
     (acc, trackKey) => ({
@@ -58,7 +58,7 @@
     });
     statusPct = 66;
     const selectedTrackUri = getSelectedTrackURI();
-    const { snapshotId } = await addTracksToPlaylist({
+    await addTracksToPlaylist({
       logout: authStore.logout,
       playlistId,
       uris: selectedTrackUri,
@@ -67,16 +67,6 @@
     statusPct = 100;
     status = "Success!";
     playlistLink = spotifyUri;
-    console.log({
-      playlistName,
-      playlistDesc,
-      tracksWithChecks,
-      selectedTrackUri,
-      userId,
-      playlistId,
-      spotifyUri,
-      snapshotId,
-    });
   }
 
   async function createPlaylist() {
@@ -138,7 +128,7 @@
         >
           Play it
         </a>
-        <button on:click={() => null} class="btn btn-primary mt-2 mb-2"
+        <button on:click={closeForm} class="btn btn-primary mt-2 mb-2"
           >Close</button
         >
       {:else}
