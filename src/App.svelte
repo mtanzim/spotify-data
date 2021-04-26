@@ -13,7 +13,7 @@
     authStore.rehydrate();
   });
 
-  let page = Page.Artists;
+  let page = Page.Tracks;
   function setPage(newPage: Page) {
     page = newPage;
   }

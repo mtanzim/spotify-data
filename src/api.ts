@@ -24,27 +24,20 @@ export const rangeOptions = {
   },
 };
 
-const getUserTopTracks = (url, token) =>
+const makeApiCall = (url, token, method = "GET", body = undefined) =>
   fetch(url, {
+    method,
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
       Authorization: token,
     },
-  });
-
-const getUserTopArtists = (url, token) =>
-  fetch(url, {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: token,
-    },
+    body,
   });
 
 export async function tracks({ limit, range, offset, token, logout }) {
   const url = `https://api.spotify.com/v1/me/top/tracks?time_range=${range}&limit=${limit}&offset=${offset}`;
-  const raw = await getUserTopTracks(url, token);
+  const raw = await makeApiCall(url, token);
   if (raw.ok) {
     const jsonData = await raw.json();
     const { items, next } = jsonData;
@@ -57,7 +50,7 @@ export async function tracks({ limit, range, offset, token, logout }) {
 
 export async function artists({ limit, range, offset, token, logout }) {
   const url = `https://api.spotify.com/v1/me/top/artists?time_range=${range}&limit=${limit}&offset=${offset}`;
-  const raw = await getUserTopArtists(url, token);
+  const raw = await makeApiCall(url, token);
   if (raw.ok) {
     const jsonData = await raw.json();
     const { items, next } = jsonData;
@@ -66,4 +59,62 @@ export async function artists({ limit, range, offset, token, logout }) {
     logout();
   }
   throw new Error("Failed to fetch top artists");
+}
+
+export async function getMyProfile({ token, logout }) {
+  const url = "https://api.spotify.com/v1/me";
+  const raw = await makeApiCall(url, token);
+
+  if (raw.ok) {
+    const jsonData = await raw.json();
+    const { id } = jsonData;
+    return { userId: id };
+  } else if (raw.status === 401) {
+    logout();
+  }
+  throw new Error("Failed to get my profile");
+}
+
+export async function addTracksToPlaylist({ playlistId, uris, token, logout }) {
+  const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+  const body = { uris };
+  const raw = await makeApiCall(url, token, "POST", JSON.stringify(body));
+
+  if (raw.ok) {
+    const jsonData = await raw.json();
+    const { snapshot_id } = jsonData;
+    return { snapshotId: snapshot_id };
+  } else if (raw.status === 401) {
+    logout();
+  }
+  throw new Error("Failed to create a playlist.");
+}
+
+export async function createPlaylist({
+  name,
+  description,
+  isPublic,
+  userId,
+  token,
+  logout,
+}) {
+  const url = `https://api.spotify.com/v1/users/${userId}/playlists`;
+  const body = {
+    name,
+    description,
+    public: isPublic,
+  };
+  const raw = await makeApiCall(url, token, "POST", JSON.stringify(body));
+
+  if (raw.ok) {
+    const jsonData = await raw.json();
+    const {
+      id,
+      external_urls: { spotify },
+    } = jsonData;
+    return { playlistId: id, spotifyUri: spotify };
+  } else if (raw.status === 401) {
+    logout();
+  }
+  throw new Error("Failed to create a playlist.");
 }

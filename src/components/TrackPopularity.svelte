@@ -32,10 +32,8 @@
     <h1>Popularity of my top tracks</h1>
     <p>
       This chart plots the popularity of your top songs, according to Spotify.
-      Each song is rated on a scale of 0 - 100.
-      They are sorted according to your ranking.
-      Select from the dropdown to
-      change the time range.
+      Each song is rated on a scale of 0 - 100. They are sorted according to
+      your ranking. Select from the dropdown to change the time range.
     </p>
     <RangeDropdown {selectedRange} {setRange} />
   </InfoCard>
@@ -45,7 +43,6 @@
     <Loader />
   {:then items}
     <Plot
-      {items}
       x={items.map((item) => item.name)}
       y={items.map((item) => item.popularity)}
     />
@@ -60,12 +57,6 @@
     text-transform: uppercase;
     font-size: 4em;
     font-weight: 100;
-  }
-
-  .title {
-    display: flex;
-    flex-direction: column;
-    align-content: flex-end;
   }
 
   @keyframes fadeIn {

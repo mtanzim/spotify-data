@@ -60,12 +60,6 @@
     font-weight: 100;
   }
 
-  .title {
-    display: flex;
-    flex-direction: column;
-    align-content: flex-end;
-  }
-
   @keyframes fadeIn {
     0% {
       opacity: 0.4;

@@ -24,21 +24,21 @@
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
           <a
-            on:click={setPage(Page.Artists)}
-            class="nav-link {page === Page.Artists ? 'active' : ''}"
-            aria-current="page"
-            href="#"
-          >
-            Top artists
-          </a>
-        </li>
-        <li class="nav-item">
-          <a
             href="#"
             on:click={setPage(Page.Tracks)}
             class="nav-link {page === Page.Tracks ? 'active' : ''}"
             >Top Tracks</a
           >
+        </li>
+        <li class="nav-item">
+          <a
+            on:click={setPage(Page.Artists)}
+            class="nav-link {page === Page.Artists ? 'active' : ''}"
+            aria-current="page"
+            href="#"
+          >
+            Top Artists
+          </a>
         </li>
         <li class="nav-item">
           <a
@@ -61,7 +61,7 @@
             class="btn btn-outline-danger my-2 my-sm-0 ml-12"
             on:click={authStore.logout}
           >
-            <i class="fas fa-sign-out-alt" />
+            Logout
           </button>
         </li>
       </ul>
