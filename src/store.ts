@@ -1,6 +1,26 @@
 import { writable } from "svelte/store";
+import { v4 as uuidv4 } from "uuid";
 
 const LOCALSTORAGE_KEY = "spotify-top";
+const LOCALSTORAGE_STATE_KEY = "spotify-top-state";
+
+const StateManager = {
+  getState() {
+    const curState = window.localStorage.getItem(LOCALSTORAGE_STATE_KEY);
+    if (!curState) {
+      return this.createState();
+    }
+    return curState;
+  },
+  createState() {
+    const newState = uuidv4();
+    window.localStorage.setItem(LOCALSTORAGE_STATE_KEY, newState);
+    return newState;
+  },
+  removeState() {
+    window.localStorage.removeItem(LOCALSTORAGE_STATE_KEY);
+  },
+};
 
 function createAuthStore() {
   const config = {
@@ -9,7 +29,6 @@ function createAuthStore() {
     scopes: __myapp.env["SCOPES"],
     redirectUri: __myapp.env["REDIRECT_URL"],
     responseType: "token",
-    state: __myapp.env["STATE"],
   };
 
   const { subscribe, set } = writable({
@@ -34,20 +53,14 @@ function createAuthStore() {
       isLoggedIn: false,
       userData: null,
     });
+    StateManager.removeState();
     window.localStorage.removeItem(LOCALSTORAGE_KEY);
   }
 
   function authorize() {
-    const {
-      baseUrl,
-      clientId,
-      scopes,
-      redirectUri,
-      responseType,
-      state,
-    } = config;
+    const { baseUrl, clientId, scopes, redirectUri, responseType } = config;
 
-    const url = `${baseUrl}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes}&response_type=${responseType}&state=${state}`;
+    const url = `${baseUrl}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes}&response_type=${responseType}&state=${StateManager.getState()}`;
     return window.location.replace(url);
   }
 
@@ -75,7 +88,10 @@ function createAuthStore() {
       const [k, v] = param.split("=");
       paramsDict[k] = v;
     });
-    if (paramsDict.access_token && paramsDict.state === config.state) {
+    if (
+      paramsDict.access_token &&
+      paramsDict.state === StateManager.getState()
+    ) {
       return login(paramsDict.access_token, null);
     }
   }
