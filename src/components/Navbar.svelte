@@ -37,7 +37,7 @@
             aria-current="page"
             href="#"
           >
-            Top artists
+            Top Artists
           </a>
         </li>
         <li class="nav-item">
