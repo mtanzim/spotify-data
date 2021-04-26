@@ -16,7 +16,7 @@
     </p>
   </div>
 </div>
-<img class="home-logo" src="favicon.png" />
+<img alt="favicon" class="home-logo" src="favicon.png" />
 <p class="lead">Please log into Spotify to continue.</p>
 <button class="btn btn-outline-primary" on:click={authStore.authorize}
   >Login</button
