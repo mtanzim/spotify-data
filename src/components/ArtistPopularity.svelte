@@ -30,7 +30,7 @@
 
 <div class="container-fluid">
   <InfoCard>
-    <h1>Popularity of my top tracks</h1>
+    <h1>Popularity of my top artists</h1>
     <p>
       This chart plots the popularity of your top artists, according to Spotify.
       Each song is rated on a scale of 0 - 100. They are sorted according to
