@@ -33,8 +33,9 @@
     <h1>Popularity of my top artists</h1>
     <p>
       This chart plots the popularity of your top artists, according to Spotify.
-      Each song is rated on a scale of 0 - 100. They are sorted according to
-      your ranking. Select from the dropdown to change the time range.
+      The popularity of each artist is rated on a scale of 0 - 100. Artists are
+      plotted according to your ranking along the horizontal axis. Select from
+      the dropdown to change the time range.
     </p>
     <RangeDropdown {selectedRange} {setRange} />
   </InfoCard>
@@ -44,8 +45,9 @@
     <Loader />
   {:then items}
     <Plot
-      x={items.map((item) => item.name)}
+      x={items.map((_item, idx) => idx + 1)}
       y={items.map((item) => item.popularity)}
+      lables={items.map((item) => item.name)}
     />
   {:catch error}
     <p style="color: red">{error.message}</p>
