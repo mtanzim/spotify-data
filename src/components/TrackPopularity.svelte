@@ -31,7 +31,7 @@
   <InfoCard>
     <h1>Popularity of my top tracks</h1>
     <p>
-      This chart plots the popularity of your top songs, according to Spotify.
+      This chart plots the popularity of your top songs.
       The popularity of each song is rated on a scale of 0 - 100. Songs are
       plotted according to your ranking along the horizontal axis. Select from
       the dropdown to change the time range.

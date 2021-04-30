@@ -32,7 +32,7 @@
   <InfoCard>
     <h1>Popularity of my top artists</h1>
     <p>
-      This chart plots the popularity of your top artists, according to Spotify.
+      This chart plots the popularity of your top artists.
       The popularity of each artist is rated on a scale of 0 - 100. Artists are
       plotted according to your ranking along the horizontal axis. Select from
       the dropdown to change the time range.
