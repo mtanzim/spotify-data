@@ -89,7 +89,7 @@
   <InfoCard>
     <h1>Top Tracks</h1>
     <p>
-      These are the songs you've been listening to the most. Select from the
+      These are your top songs according to Spotify. Select from the
       dropdown to change the time range.
     </p>
     <RangeDropdown {selectedRange} {setRange} />

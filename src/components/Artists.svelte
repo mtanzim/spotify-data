@@ -35,7 +35,7 @@
   <InfoCard>
     <h1>Top Artists</h1>
     <p>
-      These are the artists you've been listening to the most. Select from the
+      These are your top artists according to Spotify. Select from the
       dropdown to change the time range.
     </p>
     <RangeDropdown {selectedRange} {setRange} />
