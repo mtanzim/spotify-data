@@ -30,7 +30,7 @@
     return items;
   });
 
-  const baseName = "My most played songs";
+  const baseName = "My top songs";
   let playlistName = baseName;
   $: {
     switch (selectedRange) {
@@ -89,8 +89,8 @@
   <InfoCard>
     <h1>Top Tracks</h1>
     <p>
-      These are your top songs according to Spotify. Select from the
-      dropdown to change the time range.
+      These are your top songs according to Spotify. Select from the dropdown to
+      change the time range.
     </p>
     <RangeDropdown {selectedRange} {setRange} />
     <span>
