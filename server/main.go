@@ -5,8 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-
-	_ "github.com/joho/godotenv/autoload"
 )
 
 type body struct {
