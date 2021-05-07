@@ -25,7 +25,6 @@ func authorize(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	authUrl := baseUrl + "?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&scope=" + scopes + "&response_type=" + responseType + "&state=" + b.State
-	log.Println(authUrl)
 
 	w.Write([]byte(authUrl))
 }

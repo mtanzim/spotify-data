@@ -52,7 +52,6 @@ function createAuthStore() {
   async function authorize() {
     return fetch("/authorize", {
       method: "POST",
-      redirect: "follow",
       mode: "no-cors",
       body: JSON.stringify({
         state: StateManager.getState(),
