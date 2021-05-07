@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "cp .env.production .env && rollup -c",
-    "build-gcp": "cp .env.gcp .env && rollup -c && cp -r public server/",
+    "build": "rollup -c",
     "dev": "cp .env.local .env && rollup -c -w",
     "start": "sirv public --no-clear",
     "validate": "svelte-check"
