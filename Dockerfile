@@ -14,12 +14,12 @@ FROM golang:latest
 
 WORKDIR /go/src/app
 COPY --from=build /app/public server/public
-COPY server/go.mod .
-COPY server/go.sum .
+COPY ./server/go.mod .
+COPY ./server/go.sum .
 RUN go mod download
-COPY server/ .
+COPY ./server .
 
 
 EXPOSE 5000
-RUN go build -o server main.go
-CMD ["./server"]
+RUN go build -o rest-server main.go
+CMD ["./rest-server"]
