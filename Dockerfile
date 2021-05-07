@@ -13,11 +13,11 @@ RUN npm run build
 FROM golang:latest
 
 WORKDIR /go/src/app
-COPY --from=build /app/public server/public
-COPY ./server/go.mod .
-COPY ./server/go.sum .
+COPY --from=build /app/public public
+COPY server/go.mod .
+COPY server/go.sum .
 RUN go mod download
-COPY ./server .
+COPY server .
 
 
 EXPOSE 5000
