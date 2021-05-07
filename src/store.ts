@@ -23,13 +23,13 @@ const StateManager = {
 };
 
 function createAuthStore() {
-  const config = {
-    baseUrl: "https://accounts.spotify.com/authorize",
-    clientId: __myapp.env["CLIENT_ID"],
-    scopes: __myapp.env["SCOPES"],
-    redirectUri: __myapp.env["REDIRECT_URL"],
-    responseType: "token",
-  };
+  // const config = {
+  //   baseUrl: "https://accounts.spotify.com/authorize",
+  //   clientId: __myapp.env["CLIENT_ID"],
+  //   scopes: __myapp.env["SCOPES"],
+  //   redirectUri: __myapp.env["REDIRECT_URL"],
+  //   responseType: "token",
+  // };
 
   const { subscribe, set } = writable({
     token: null,
@@ -57,11 +57,20 @@ function createAuthStore() {
     window.localStorage.removeItem(LOCALSTORAGE_KEY);
   }
 
-  function authorize() {
-    const { baseUrl, clientId, scopes, redirectUri, responseType } = config;
+  async function authorize() {
+    // const { baseUrl, clientId, scopes, redirectUri, responseType } = config;
 
-    const url = `${baseUrl}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes}&response_type=${responseType}&state=${StateManager.getState()}`;
-    return window.location.replace(url);
+    // const url = `${baseUrl}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes}&response_type=${responseType}&state=${StateManager.getState()}`;
+    return (
+      fetch("/authorize", {
+        method: "POST",
+        redirect: "follow",
+        mode: "no-cors",
+      })
+        .then((res) => res.text())
+        .then((res) => window.location.replace(res))
+        .catch((err) => console.log(err))
+    );
   }
 
   function rehydrate() {
@@ -89,8 +98,8 @@ function createAuthStore() {
       paramsDict[k] = v;
     });
     if (
-      paramsDict.access_token &&
-      paramsDict.state === StateManager.getState()
+      paramsDict.access_token
+      // paramsDict.state === StateManager.getState()
     ) {
       return login(paramsDict.access_token, null);
     }
