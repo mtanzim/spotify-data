@@ -58,19 +58,17 @@ function createAuthStore() {
   }
 
   async function authorize() {
-    // const { baseUrl, clientId, scopes, redirectUri, responseType } = config;
-
-    // const url = `${baseUrl}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes}&response_type=${responseType}&state=${StateManager.getState()}`;
-    return (
-      fetch("/authorize", {
-        method: "POST",
-        redirect: "follow",
-        mode: "no-cors",
-      })
-        .then((res) => res.text())
-        .then((res) => window.location.replace(res))
-        .catch((err) => console.log(err))
-    );
+    return fetch("/authorize", {
+      method: "POST",
+      redirect: "follow",
+      mode: "no-cors",
+      body: JSON.stringify({
+        state: StateManager.getState(),
+      }),
+    })
+      .then((res) => res.text())
+      .then((res) => res && window.location.replace(res))
+      .catch((err) => console.log(err));
   }
 
   function rehydrate() {
@@ -98,8 +96,8 @@ function createAuthStore() {
       paramsDict[k] = v;
     });
     if (
-      paramsDict.access_token
-      // paramsDict.state === StateManager.getState()
+      paramsDict.access_token &&
+      paramsDict.state === StateManager.getState()
     ) {
       return login(paramsDict.access_token, null);
     }
