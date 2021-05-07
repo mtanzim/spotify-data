@@ -2,4 +2,4 @@
 
 Static Svelte SPA to serve personal listener data to Spotify users.
 
-Current deployed [here.](https://d1bxmuvr628ssn.cloudfront.net/#)
+Current deployed [here.](https://spotify-personal-ybmvkz22xq-uc.a.run.app/)
