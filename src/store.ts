@@ -23,14 +23,6 @@ const StateManager = {
 };
 
 function createAuthStore() {
-  // const config = {
-  //   baseUrl: "https://accounts.spotify.com/authorize",
-  //   clientId: __myapp.env["CLIENT_ID"],
-  //   scopes: __myapp.env["SCOPES"],
-  //   redirectUri: __myapp.env["REDIRECT_URL"],
-  //   responseType: "token",
-  // };
-
   const { subscribe, set } = writable({
     token: null,
     isLoggedIn: false,
