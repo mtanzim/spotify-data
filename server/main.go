@@ -13,15 +13,12 @@ type body struct {
 	State string
 }
 
-var (
-	baseUrl      = os.Getenv("BASE_URL")
-	clientId     = os.Getenv("CLIENT_ID")
-	scopes       = os.Getenv("SCOPES")
-	redirectUri  = os.Getenv("REDIRECT_URL")
-	responseType = os.Getenv("RESPONSE_TYPE")
-)
-
 func authorize(w http.ResponseWriter, req *http.Request) {
+	baseUrl := os.Getenv("BASE_URL")
+	clientId := os.Getenv("CLIENT_ID")
+	scopes := os.Getenv("SCOPES")
+	redirectUri := os.Getenv("REDIRECT_URL")
+	responseType := os.Getenv("RESPONSE_TYPE")
 
 	var b body
 	err := json.NewDecoder(req.Body).Decode(&b)
