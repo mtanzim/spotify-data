@@ -44,7 +44,7 @@
           <a
             href="#"
             on:click={setPage(Page.Genre)}
-            class="nav-link {page === Page.Genre ? 'active' : ''}">Genres</a
+            class="nav-link {page === Page.Genre ? 'active' : ''}">Top Genres</a
           >
         </li>
         <li class="nav-item">
