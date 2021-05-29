@@ -6,8 +6,6 @@
   import RangeDropdown from "./RangeDropdown.svelte";
   import PlaylistForm from "./PlaylistForm.svelte";
 
-  const MAX_TRACK_NAME_LEN = 60;
-
   let offset = 0;
   let limit = 50;
   let selectedRange = rangeOptions.short;
@@ -34,9 +32,7 @@
 <div class="container-fluid">
   <InfoCard>
     <h1>Top Genres</h1>
-    <p>
-      These are the genres you listen to the most.
-    </p>
+    <p>These are the genres you listen to the most.</p>
     <RangeDropdown {selectedRange} {setRange} />
   </InfoCard>
 </div>
@@ -45,10 +41,10 @@
 {:then artists}
   <div class="track-block-container">
     <ul>
-    {#each artists as artist, i}
-      <li>{artist.name}</li>
-    {/each}
-  </ul>
+      {#each artists as artist, i}
+        <li>{artist?.genres?.join(",")}</li>
+      {/each}
+    </ul>
   </div>
 {:catch error}
   <p style="color: red">{error.message}</p>
