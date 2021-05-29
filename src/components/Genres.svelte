@@ -31,12 +31,6 @@
     }, {});
 
     return genreMap;
-
-    // const sortedGenres = Object.keys(genreMap)
-    //   .sort((a, b) => genreMap[b] - genreMap[a])
-    //   .map((g) => [g, genreMap[g]]);
-
-    // return sortedGenres;
   });
 
   function setRange(key: string) {
@@ -47,7 +41,10 @@
 <div class="container-fluid">
   <InfoCard>
     <h1>Top Genres</h1>
-    <p>These are the genres you listen to the most.</p>
+    <p>
+      Based on your top artisis, here is a word cloud of your favorite genres. A
+      larger font size indicates a higher affinity towards the genre.
+    </p>
     <RangeDropdown {selectedRange} {setRange} />
   </InfoCard>
 </div>

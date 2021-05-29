@@ -7,10 +7,24 @@
 
   const DIV_ID = "word-cloud";
 
+  const vw = Math.max(
+    document.documentElement.clientWidth || 0,
+    window.innerWidth || 0
+  );
+  const vh = Math.max(
+    document.documentElement.clientHeight || 0,
+    window.innerHeight || 0
+  );
+  const SCALING_FACTOR = 15;
+
+
+  const WIDTH = (vw * 2) / 3;
+  const LENGTH = vh / 2;
+
   const words = Object.keys(genreMap);
   const layout = cloud()
-    .size([500, 500])
-    .words(words.map((d) => ({ text: d, size: genreMap[d] })))
+    .size([WIDTH, LENGTH])
+    .words(words.map((d) => ({ text: d, size: genreMap[d] * SCALING_FACTOR })))
     .padding(5)
     .rotate(function () {
       return ~~(Math.random() * 2) * 90;
@@ -22,7 +36,7 @@
     .on("end", draw);
 
   function draw(words) {
-    d3.select("body")
+    d3.select(`#${DIV_ID}`)
       .append("svg")
       .attr("width", layout.size()[0])
       .attr("height", layout.size()[1])
@@ -53,13 +67,4 @@
   });
 </script>
 
-<div id={DIV_ID} class="block-container" />
-
-<style>
-  .block-container {
-    height: 60vh;
-    width: 100%;
-    margin: auto;
-    animation: fadeIn 1.5s;
-  }
-</style>
+<div id={DIV_ID} />
