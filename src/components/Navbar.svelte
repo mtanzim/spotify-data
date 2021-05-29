@@ -43,6 +43,13 @@
         <li class="nav-item">
           <a
             href="#"
+            on:click={setPage(Page.Genre)}
+            class="nav-link {page === Page.Genre ? 'active' : ''}">Genres</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            href="#"
             on:click={setPage(Page.PopularityTrack)}
             class="nav-link {page === Page.PopularityTrack ? 'active' : ''}"
             >Track Popularity</a
@@ -56,13 +63,7 @@
             >Artist Popularity</a
           >
         </li>
-        <li class="nav-item">
-          <a
-            href="#"
-            on:click={setPage(Page.Genre)}
-            class="nav-link {page === Page.Genre ? 'active' : ''}">Genres</a
-          >
-        </li>
+
         <li class="nav-item">
           <button
             class="btn btn-outline-danger my-2 my-sm-0 ml-12"
