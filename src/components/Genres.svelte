@@ -4,7 +4,6 @@
   import InfoCard from "./InfoCard.svelte";
   import Loader from "./Loader.svelte";
   import RangeDropdown from "./RangeDropdown.svelte";
-  import PlaylistForm from "./PlaylistForm.svelte";
 
   let offset = 0;
   let limit = 50;
@@ -16,12 +15,26 @@
     range: selectedRange?.apiParam,
     token: $authStore.token,
     logout: authStore.logout,
-  }).then(({ items, next }) => {
+  }).then(({ items }) => {
     if (!items || items?.length === 0) {
       throw new Error("No artists found");
     }
-    next = next;
-    return items;
+    const genres = items.flatMap((i) => i.genres);
+    const genreMap = genres.reduce((acc, cur) => {
+      console.log({ acc, cur });
+      if (acc?.[cur] !== undefined) {
+        acc[cur] = acc[cur] + 1;
+      } else {
+        acc[cur] = 1;
+      }
+      return acc;
+    }, {});
+
+    const sortedGenres = Object.keys(genreMap)
+      .sort((a, b) => genreMap[b] - genreMap[a])
+      .map((g) => [g, genreMap[g]]);
+
+    return sortedGenres;
   });
 
   function setRange(key: string) {
@@ -38,11 +51,11 @@
 </div>
 {#await artistsPromise}
   <Loader />
-{:then artists}
+{:then genres}
   <div class="track-block-container">
     <ul>
-      {#each artists as artist, i}
-        <li>{artist?.genres?.join(",")}</li>
+      {#each genres as genre, i}
+        <li>{genre}</li>
       {/each}
     </ul>
   </div>
