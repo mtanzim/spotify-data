@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import * as d3 from "d3";
   import cloud from "d3-cloud";
+  import { onMount } from "svelte";
 
   export let genreMap: { [k: string]: number };
 
@@ -15,15 +15,35 @@
     document.documentElement.clientHeight || 0,
     window.innerHeight || 0
   );
-  const SCALING_FACTOR = 10;
+
+  let scalingFactor = 200;
+
+  if (vw >= 768) {
+    scalingFactor = 200;
+  } else {
+    scalingFactor = 50;
+  }
 
   const WIDTH = (vw * 2) / 3;
-  const LENGTH = vh / 2;
+  const LENGTH = (vh * 2) / 3;
+  const MIN_FONT_SIZE = 4;
 
   const words = Object.keys(genreMap);
+  const maxCount = Math.max(...Object.values(genreMap));
+
   const layout = cloud()
     .size([WIDTH, LENGTH])
-    .words(words.map((d) => ({ text: d, size: genreMap[d] * SCALING_FACTOR })))
+    .words(
+      words.map((d) => {
+        const size = (genreMap[d] / maxCount) * scalingFactor;
+        const adjustedSized = Math.max(MIN_FONT_SIZE, size);
+        console.log(size);
+        return {
+          text: d,
+          size: adjustedSized,
+        };
+      })
+    )
     .padding(1)
     .rotate(function () {
       return ~~(Math.random() * 2) * 90;
@@ -67,4 +87,10 @@
   });
 </script>
 
-<div id={DIV_ID} />
+<div class="word-container" id={DIV_ID} />
+
+<style>
+  .word-container {
+    overflow: auto;
+  }
+</style>
