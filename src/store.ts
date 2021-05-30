@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const LOCALSTORAGE_KEY = "spotify-top";
 const LOCALSTORAGE_STATE_KEY = "spotify-top-state";
+const AUTH_ENDPOINT = __myapp.env.AUTH_ENDPOINT || "/";
 
 const StateManager = {
   getState() {
@@ -50,9 +51,8 @@ function createAuthStore() {
   }
 
   async function authorize() {
-    return fetch("/authorize", {
+    return fetch(`${AUTH_ENDPOINT}authorize`, {
       method: "POST",
-      mode: "no-cors",
       body: JSON.stringify({
         state: StateManager.getState(),
       }),
