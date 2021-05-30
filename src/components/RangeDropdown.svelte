@@ -6,7 +6,7 @@
 
 <div class="dropdown">
   <button
-    class="btn btn-outline-dark btn-sm dropdown-toggle"
+    class="btn btn-outline-dark btn-sm dropdown-toggle mb-2"
     type="button"
     id="dropdownMenuButton1"
     data-bs-toggle="dropdown"
