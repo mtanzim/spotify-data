@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const LOCALSTORAGE_KEY = "spotify-top";
 const LOCALSTORAGE_STATE_KEY = "spotify-top-state";
-const AUTH_ENDPOINT = __myapp.env.AUTH_ENDPOINT || "";
+const AUTH_ENDPOINT = __myapp.env.AUTH_ENDPOINT || "/";
 
 const StateManager = {
   getState() {
@@ -57,7 +57,7 @@ function createAuthStore() {
         state: StateManager.getState(),
       }),
     })
-      .then((res) => res.json())
+      .then((res) => res.text())
       .then((res) => res && window.location.replace(res))
       .catch((err) => console.log(err));
   }

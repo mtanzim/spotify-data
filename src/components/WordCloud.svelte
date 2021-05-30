@@ -37,7 +37,6 @@
       words.map((d) => {
         const size = (genreMap[d] / maxCount) * scalingFactor;
         const adjustedSized = Math.max(MIN_FONT_SIZE, size);
-        console.log(size);
         return {
           text: d,
           size: adjustedSized,

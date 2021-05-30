@@ -23,7 +23,7 @@ func authorize(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
 	if isDev {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 	}
@@ -43,9 +43,7 @@ func authorize(w http.ResponseWriter, req *http.Request) {
 	}
 	log.Println(b)
 	authUrl := baseUrl + "?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&scope=" + scopes + "&response_type=" + responseType + "&state=" + b.State
-
-	// w.Write([]byte(authUrl))
-	json.NewEncoder(w).Encode(authUrl)
+	w.Write([]byte(authUrl))
 }
 
 func main() {

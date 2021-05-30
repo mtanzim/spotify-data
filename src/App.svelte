@@ -15,7 +15,7 @@
     authStore.rehydrate();
   });
 
-  let page = Page.Genre;
+  let page = Page.Tracks;
   function setPage(newPage: Page) {
     page = newPage;
   }
