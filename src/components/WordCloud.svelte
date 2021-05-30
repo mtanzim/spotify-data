@@ -15,8 +15,7 @@
     document.documentElement.clientHeight || 0,
     window.innerHeight || 0
   );
-  const SCALING_FACTOR = 15;
-
+  const SCALING_FACTOR = 10;
 
   const WIDTH = (vw * 2) / 3;
   const LENGTH = vh / 2;
@@ -25,7 +24,7 @@
   const layout = cloud()
     .size([WIDTH, LENGTH])
     .words(words.map((d) => ({ text: d, size: genreMap[d] * SCALING_FACTOR })))
-    .padding(5)
+    .padding(1)
     .rotate(function () {
       return ~~(Math.random() * 2) * 90;
     })
@@ -33,6 +32,7 @@
     .fontSize(function (d) {
       return d.size;
     })
+    .spiral("archimedean")
     .on("end", draw);
 
   function draw(words) {
