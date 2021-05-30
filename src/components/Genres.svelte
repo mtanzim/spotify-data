@@ -42,7 +42,7 @@
   <InfoCard>
     <h1>Top Genres</h1>
     <p>
-      Based on your top artisis, here is a word cloud of your favorite genres. A
+      Based on your top artists, here is a word cloud of your favorite genres. A
       larger font size indicates a higher affinity towards the genre.
     </p>
     <RangeDropdown {selectedRange} {setRange} />
