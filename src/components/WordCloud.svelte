@@ -24,8 +24,8 @@
     scalingFactor = 50;
   }
 
-  const WIDTH = (vw * 2) / 3;
-  const LENGTH = (vh * 2) / 3;
+  const WIDTH = 0.8 * vw;
+  const LENGTH = 0.66 * vh;
   const MIN_FONT_SIZE = 4;
 
   const words = Object.keys(genreMap);
