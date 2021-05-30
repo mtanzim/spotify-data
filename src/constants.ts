@@ -3,4 +3,5 @@ export enum Page {
   Tracks,
   PopularityArtist,
   PopularityTrack,
+  Genre,
 }

@@ -5,6 +5,8 @@
   import Navbar from "./components/Navbar.svelte";
   import TrackPopularity from "./components/TrackPopularity.svelte";
   import Tracks from "./components/Tracks.svelte";
+  import Genres from "./components/Genres.svelte";
+
   import { Page } from "./constants";
   import { authStore } from "./store";
   import { onMount } from "svelte";
@@ -32,6 +34,8 @@
       <ArtistPopularity />
     {:else if page === Page.PopularityTrack}
       <TrackPopularity />
+    {:else if page === Page.Genre}
+      <Genres />
     {/if}
   {/if}
 </main>
