@@ -42,14 +42,24 @@ func authorize(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	log.Println(b)
-	authUrl := baseUrl + "?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&scope=" + scopes + "&response_type=" + responseType + "&state=" + b.State
+	authUrl := baseUrl + "/authorize" + "?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&scope=" + scopes + "&response_type=" + responseType + "&state=" + b.State
 	w.Write([]byte(authUrl))
+}
+
+func callback(w http.ResponseWriter, req *http.Request) {
+	queryParams := req.URL.Query()
+	state := queryParams.Get("state")
+	log.Println("state:", state)
+	code := queryParams.Get("code")
+	log.Println("code:", code)
+
 }
 
 func main() {
 
 	http.Handle("/", http.FileServer(http.Dir("./public")))
 	http.HandleFunc("/authorize", authorize)
+	http.HandleFunc("/callback", callback)
 
 	port := os.Getenv("PORT")
 	log.Println("Starting server on PORT:" + port)
