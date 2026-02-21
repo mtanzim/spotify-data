@@ -1,25 +1,27 @@
-FROM node:12.18.2 as build
+
+FROM oven/bun:1.3.9 AS build
+
+
 
 WORKDIR /app
 
-COPY ./package.json /app/package.json
-COPY ./package-lock.json /app/package-lock.json
+COPY package.json ./
+COPY bun.lock ./
 
-RUN npm install
+RUN bun install
 COPY . .
+RUN bun run build
 
-RUN npm run build
-
-FROM golang:latest
+FROM golang:tip-alpine3.22
 
 WORKDIR /go/src/app
 COPY --from=build /app/public public
-COPY server/go.mod .
-COPY server/go.sum .
+COPY go.mod .
+COPY go.sum .
 RUN go mod download
-COPY server .
+COPY . .
 
 
 EXPOSE 5000
-RUN go build -o rest-server main.go
+RUN go build -o rest-server cmd/server/main.go
 CMD ["./rest-server"]
