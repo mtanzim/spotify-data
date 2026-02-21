@@ -1,10 +1,14 @@
 package main
 
 import (
+	"encoding/base64"
 	"encoding/json"
+	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
+	"strings"
 
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -42,24 +46,65 @@ func authorize(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	log.Println(b)
-	authUrl := baseUrl + "/authorize" + "?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&scope=" + scopes + "&response_type=" + responseType + "&state=" + b.State
+	authUrl := baseUrl + "?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&scope=" + scopes + "&response_type=" + responseType + "&state=" + b.State
+	log.Println((authUrl))
 	w.Write([]byte(authUrl))
 }
 
-func callback(w http.ResponseWriter, req *http.Request) {
-	queryParams := req.URL.Query()
-	state := queryParams.Get("state")
-	log.Println("state:", state)
-	code := queryParams.Get("code")
-	log.Println("code:", code)
+func login(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	body, err := io.ReadAll(req.Body)
+	if err != nil {
+		log.Println("Error reading body:", err)
+		return
+	}
+	log.Println("Request body:", string(body))
+	// requestToken()
 
+}
+
+// requestToken exchanges an authorization code for tokens from Spotify.
+func requestToken(code, redirectURI, clientID, clientSecret string) (map[string]interface{}, error) {
+	data := url.Values{}
+	data.Set("code", code)
+	data.Set("redirect_uri", redirectURI)
+	data.Set("grant_type", "authorization_code")
+
+	req, err := http.NewRequest(http.MethodPost, "https://accounts.spotify.com/api/token", strings.NewReader(data.Encode()))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	auth := base64.StdEncoding.EncodeToString([]byte(clientID + ":" + clientSecret))
+	req.Header.Set("Authorization", "Basic "+auth)
+
+	client := http.DefaultClient
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var result map[string]interface{}
+	if err := json.Unmarshal(body, &result); err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
 func main() {
 
 	http.Handle("/", http.FileServer(http.Dir("./public")))
 	http.HandleFunc("/authorize", authorize)
-	http.HandleFunc("/callback", callback)
+	http.HandleFunc("/login", login)
 
 	port := os.Getenv("PORT")
 	log.Println("Starting server on PORT:" + port)
