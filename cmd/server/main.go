@@ -46,23 +46,74 @@ func authorize(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	log.Println(b)
-	authUrl := baseUrl + "?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&scope=" + scopes + "&response_type=" + responseType + "&state=" + b.State
+	authUrl := baseUrl + "/authorize" + "?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&scope=" + scopes + "&response_type=" + responseType + "&state=" + b.State
 	log.Println((authUrl))
 	w.Write([]byte(authUrl))
 }
 
-func login(w http.ResponseWriter, req *http.Request) {
-	if req.Method != http.MethodPost {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-	body, err := io.ReadAll(req.Body)
+func callback(w http.ResponseWriter, req *http.Request) {
+	queryParams := req.URL.Query()
+	state := queryParams.Get("state")
+	log.Println("state:", state)
+	code := queryParams.Get("code")
+	log.Println("code:", code)
+
+	clientId := os.Getenv("CLIENT_ID")
+	clientSecret := os.Getenv("CLIENT_SECRET")
+	redirectUri := os.Getenv("REDIRECT_URL")
+	isDev := os.Getenv("DEVELOPMENT") == "1"
+
+	tokenResp, err := requestToken(code, redirectUri, clientId, clientSecret)
 	if err != nil {
-		log.Println("Error reading body:", err)
+		log.Println(err)
+		http.Error(w, "token request failed", http.StatusInternalServerError)
 		return
 	}
-	log.Println("Request body:", string(body))
-	// requestToken()
+	log.Println(tokenResp)
+	accessToken, _ := tokenResp["access_token"].(string)
+	refreshToken, _ := tokenResp["refresh_token"].(string)
+	scope, _ := tokenResp["scope"].(string)
+	var expiresIn int
+	if v, ok := tokenResp["expires_in"].(float64); ok {
+		expiresIn = int(v)
+	} else {
+		expiresIn = 3600
+	}
+	accessCookie := &http.Cookie{
+		Name:     "access_token",
+		Value:    accessToken,
+		Path:     "/",
+		MaxAge:   expiresIn,
+		Secure:   !isDev,
+		HttpOnly: false,
+		SameSite: http.SameSiteLaxMode,
+	}
+	http.SetCookie(w, accessCookie)
+	scopeCookie := &http.Cookie{
+		Name:     "scope",
+		Value:    scope,
+		Path:     "/",
+		MaxAge:   expiresIn,
+		Secure:   !isDev,
+		HttpOnly: false,
+		SameSite: http.SameSiteLaxMode,
+	}
+	http.SetCookie(w, scopeCookie)
+	if refreshToken != "" {
+		refreshCookie := &http.Cookie{
+			Name:  "refresh_token",
+			Value: refreshToken,
+			Path:  "/",
+			// keep refresh longer (e.g. 30 days) or use an env override
+			MaxAge:   30 * 24 * 60 * 60,
+			Secure:   !isDev,
+			HttpOnly: false,
+			SameSite: http.SameSiteLaxMode,
+		}
+		http.SetCookie(w, refreshCookie)
+	}
+
+	http.Redirect(w, req, "/", http.StatusFound)
 
 }
 
@@ -104,7 +155,8 @@ func main() {
 
 	http.Handle("/", http.FileServer(http.Dir("./public")))
 	http.HandleFunc("/authorize", authorize)
-	http.HandleFunc("/login", login)
+	http.HandleFunc("/callback", callback)
+	// http.HandleFunc("/login", login)
 
 	port := os.Getenv("PORT")
 	log.Println("Starting server on PORT:" + port)
