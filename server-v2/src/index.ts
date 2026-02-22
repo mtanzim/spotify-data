@@ -76,8 +76,15 @@ app.get("/api/v1/callback", async (c) => {
     return c.status(500);
   }
   const secretPayload = JSON.stringify(parsedRes.data);
+  const encoded = await encrypt(secretPayload);
 
-  setCookie(c, "token", await encrypt(secretPayload));
+  setCookie(c, "token", encoded);
+  // try {
+  //   const decrypted = await decrypt(encoded);
+  //   console.log(JSON.parse(decrypted));
+  // } catch (err) {
+  //   console.log(err);
+  // }
   return c.redirect("/");
 });
 
@@ -111,23 +118,35 @@ async function decrypt(base64Bundle: string) {
     throw new Error("configure encryption key");
   }
   const keyData = Uint8Array.fromHex(serverEncKey);
+  console.log(keyData.length);
   const key = await crypto.subtle.importKey("raw", keyData, "AES-GCM", false, [
     "encrypt",
     "decrypt",
   ]);
-  const combined = Buffer.from(base64Bundle, "base64");
+  try {
+    const decodedBundle = decodeURIComponent(base64Bundle);
+    const combined = Buffer.from(decodedBundle, "base64");
 
-  // Extract the parts: IV is the first 12 bytes, rest is ciphertext
-  const iv = combined.subarray(0, 12);
-  const ciphertext = combined.subarray(12);
+    // console.log("Total Buffer Length:", combined.length);
 
-  const decryptedBuffer = await crypto.subtle.decrypt(
-    { name: "AES-GCM", iv },
-    key,
-    ciphertext,
-  );
+    const iv = combined.subarray(0, 12);
+    const ciphertext = combined.subarray(12);
 
-  return new TextDecoder().decode(decryptedBuffer);
+    // console.log("Ciphertext (+ Tag) Length:", ciphertext.length);
+
+    // If ciphertext.length < 16, it's impossible to decrypt (GCM tag is 16 bytes)
+    if (ciphertext.length < 16) throw new Error("Ciphertext too short");
+
+    const decryptedBuffer = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv },
+      key,
+      ciphertext,
+    );
+    return new TextDecoder().decode(decryptedBuffer);
+  } catch (e) {
+    console.error("Decryption failed. Check key, IV, or cookie encoding.");
+    throw e;
+  }
 }
 
 // requestToken exchanges an authorization code for tokens from Spotify.
