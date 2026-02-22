@@ -12,7 +12,7 @@ const scopes = process.env.SCOPES;
 const redirectUri = process.env.REDIRECT_URL;
 const responseType = process.env.RESPONSE_TYPE;
 const state = process.env.STATE;
-const serverEncSecret = process.env.SERVER_ENCRYPTION_SECRET;
+const serverEncKey = process.env.SERVER_ENCRYPTION_KEY;
 
 const anyEnvUndefinedOrEmpty = [
   baseUrl,
@@ -22,7 +22,7 @@ const anyEnvUndefinedOrEmpty = [
   redirectUri,
   responseType,
   state,
-  serverEncSecret,
+  serverEncKey,
 ].some((v) => {
   return !v;
 });
@@ -65,6 +65,9 @@ app.get("/api/v1/callback", async (c) => {
   if (stateReadback !== state) {
     return c.status(403);
   }
+  if (!serverEncKey) {
+    return c.status(500);
+  }
 
   const parsedRes = SpotifyTokenResponseSchema.safeParse(
     await requestToken(code),
@@ -72,12 +75,60 @@ app.get("/api/v1/callback", async (c) => {
   if (!parsedRes.success) {
     return c.status(500);
   }
-  const payload = parsedRes.data;
+  const secretPayload = JSON.stringify(parsedRes.data);
 
-  const token = await sign(payload, serverEncSecret!);
-  setCookie(c, "token", token);
+  setCookie(c, "token", await encrypt(secretPayload));
   return c.redirect("/");
 });
+
+// to generate key for env
+// `bun -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`
+async function encrypt(message: string) {
+  if (!serverEncKey) {
+    throw new Error("configure encryption key");
+  }
+  const keyData = Uint8Array.fromHex(serverEncKey);
+  const key = await crypto.subtle.importKey("raw", keyData, "AES-GCM", false, [
+    "encrypt",
+    "decrypt",
+  ]);
+  const iv = crypto.getRandomValues(new Uint8Array(12)); // Fresh IV for every call
+  const encoded = new TextEncoder().encode(message);
+
+  const ciphertext = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv },
+    key,
+    encoded,
+  );
+
+  // Combine IV and Ciphertext into one Buffer
+  const combined = Buffer.concat([Buffer.from(iv), Buffer.from(ciphertext)]);
+  return combined.toString("base64");
+}
+
+async function decrypt(base64Bundle: string) {
+  if (!serverEncKey) {
+    throw new Error("configure encryption key");
+  }
+  const keyData = Uint8Array.fromHex(serverEncKey);
+  const key = await crypto.subtle.importKey("raw", keyData, "AES-GCM", false, [
+    "encrypt",
+    "decrypt",
+  ]);
+  const combined = Buffer.from(base64Bundle, "base64");
+
+  // Extract the parts: IV is the first 12 bytes, rest is ciphertext
+  const iv = combined.subarray(0, 12);
+  const ciphertext = combined.subarray(12);
+
+  const decryptedBuffer = await crypto.subtle.decrypt(
+    { name: "AES-GCM", iv },
+    key,
+    ciphertext,
+  );
+
+  return new TextDecoder().decode(decryptedBuffer);
+}
 
 // requestToken exchanges an authorization code for tokens from Spotify.
 async function requestToken(code: string): Promise<Record<string, any>> {
