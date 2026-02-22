@@ -1,27 +1,6 @@
 import { writable } from "svelte/store";
-import { v4 as uuidv4 } from "uuid";
 
-const LOCALSTORAGE_KEY = "spotify-top";
-const LOCALSTORAGE_STATE_KEY = "spotify-top-state";
-const AUTH_ENDPOINT = __myapp.env.AUTH_ENDPOINT || "/";
-
-const StateManager = {
-  getState() {
-    const curState = window.localStorage.getItem(LOCALSTORAGE_STATE_KEY);
-    if (!curState) {
-      return this.createState();
-    }
-    return curState;
-  },
-  createState() {
-    const newState = uuidv4();
-    window.localStorage.setItem(LOCALSTORAGE_STATE_KEY, newState);
-    return newState;
-  },
-  removeState() {
-    window.localStorage.removeItem(LOCALSTORAGE_STATE_KEY);
-  },
-};
+const AUTH_ENDPOINT = "/";
 
 function createAuthStore() {
   const { subscribe, set } = writable({
@@ -29,7 +8,7 @@ function createAuthStore() {
     isLoggedIn: false,
   });
 
-  window.cookieStore.get("access_token").then((v) => {
+  window.cookieStore.get("token").then((v) => {
     console.log(v);
     if (v) {
       set({
@@ -37,7 +16,6 @@ function createAuthStore() {
         isLoggedIn: true,
       });
     }
-    
   });
 
   function login(token, userData) {
@@ -51,26 +29,22 @@ function createAuthStore() {
     // window.location.href = "#";
   }
   function logout() {
-    // set({
-    //   token: null,
-    //   isLoggedIn: false,
-    //   userData: null,
-    // });
+    set({
+      token: null,
+      isLoggedIn: false,
+    });
     // StateManager.removeState();
     // window.localStorage.removeItem(LOCALSTORAGE_KEY);
-    window.cookieStore.delete("access_token");
+    window.cookieStore.delete("token");
   }
 
   async function authorize() {
     return (
-      fetch(`${AUTH_ENDPOINT}authorize`, {
+      fetch(`api/v1/authorize`, {
         method: "POST",
-        body: JSON.stringify({
-          state: StateManager.getState(),
-        }),
       })
-        // .then((res) => res.text())
-        // .then((res) => res && window.location.replace(res))
+        .then((res) => res.text())
+        .then((res) => res && window.location.replace(res))
         .catch((err) => console.log(err))
     );
   }
