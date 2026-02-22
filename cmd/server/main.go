@@ -47,8 +47,9 @@ func authorize(w http.ResponseWriter, req *http.Request) {
 	}
 	log.Println(b)
 	authUrl := baseUrl + "/authorize" + "?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&scope=" + scopes + "&response_type=" + responseType + "&state=" + b.State
-	log.Println((authUrl))
-	w.Write([]byte(authUrl))
+	http.Redirect(w, req, authUrl, http.StatusFound)
+	// log.Println((authUrl))
+	// w.Write([]byte(authUrl))
 }
 
 func callback(w http.ResponseWriter, req *http.Request) {
@@ -71,8 +72,8 @@ func callback(w http.ResponseWriter, req *http.Request) {
 	}
 	log.Println(tokenResp)
 	accessToken, _ := tokenResp["access_token"].(string)
-	refreshToken, _ := tokenResp["refresh_token"].(string)
-	scope, _ := tokenResp["scope"].(string)
+	// refreshToken, _ := tokenResp["refresh_token"].(string)
+	// scope, _ := tokenResp["scope"].(string)
 	var expiresIn int
 	if v, ok := tokenResp["expires_in"].(float64); ok {
 		expiresIn = int(v)
@@ -89,29 +90,29 @@ func callback(w http.ResponseWriter, req *http.Request) {
 		SameSite: http.SameSiteLaxMode,
 	}
 	http.SetCookie(w, accessCookie)
-	scopeCookie := &http.Cookie{
-		Name:     "scope",
-		Value:    scope,
-		Path:     "/",
-		MaxAge:   expiresIn,
-		Secure:   !isDev,
-		HttpOnly: false,
-		SameSite: http.SameSiteLaxMode,
-	}
-	http.SetCookie(w, scopeCookie)
-	if refreshToken != "" {
-		refreshCookie := &http.Cookie{
-			Name:  "refresh_token",
-			Value: refreshToken,
-			Path:  "/",
-			// keep refresh longer (e.g. 30 days) or use an env override
-			MaxAge:   30 * 24 * 60 * 60,
-			Secure:   !isDev,
-			HttpOnly: false,
-			SameSite: http.SameSiteLaxMode,
-		}
-		http.SetCookie(w, refreshCookie)
-	}
+	// scopeCookie := &http.Cookie{
+	// 	Name:     "scope",
+	// 	Value:    scope,
+	// 	Path:     "/",
+	// 	MaxAge:   expiresIn,
+	// 	Secure:   !isDev,
+	// 	HttpOnly: false,
+	// 	SameSite: http.SameSiteLaxMode,
+	// }
+	// http.SetCookie(w, scopeCookie)
+	// if refreshToken != "" {
+	// 	refreshCookie := &http.Cookie{
+	// 		Name:  "refresh_token",
+	// 		Value: refreshToken,
+	// 		Path:  "/",
+	// 		// keep refresh longer (e.g. 30 days) or use an env override
+	// 		MaxAge:   30 * 24 * 60 * 60,
+	// 		Secure:   !isDev,
+	// 		HttpOnly: false,
+	// 		SameSite: http.SameSiteLaxMode,
+	// 	}
+	// 	http.SetCookie(w, refreshCookie)
+	// }
 
 	http.Redirect(w, req, "/", http.StatusFound)
 
