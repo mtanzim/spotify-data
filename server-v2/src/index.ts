@@ -1,35 +1,36 @@
 import { Hono } from "hono";
 import { serveStatic } from "hono/bun";
 import { setCookie } from "hono/cookie";
-import { sign } from "hono/jwt";
 import * as z from "zod";
 const app = new Hono();
 
-const baseUrl = process.env.BASE_URL;
-const clientId = process.env.CLIENT_ID;
-const clientSecret = process.env.CLIENT_SECRET;
-const scopes = process.env.SCOPES;
-const redirectUri = process.env.REDIRECT_URL;
-const responseType = process.env.RESPONSE_TYPE;
-const state = process.env.STATE;
-const serverEncKey = process.env.SERVER_ENCRYPTION_KEY;
-
-const anyEnvUndefinedOrEmpty = [
-  baseUrl,
-  clientId,
-  clientSecret,
-  scopes,
-  redirectUri,
-  responseType,
-  state,
-  serverEncKey,
-].some((v) => {
-  return !v;
+const envSchema = z.object({
+  BASE_URL: z.string().nonempty(),
+  CLIENT_ID: z.string().nonempty(),
+  CLIENT_SECRET: z.string().nonempty(),
+  SCOPES: z.string().nonempty(),
+  REDIRECT_URL: z.string().nonempty(),
+  RESPONSE_TYPE: z.string().nonempty(),
+  STATE: z.string().nonempty(),
+  SERVER_ENCRYPTION_KEY: z.string().nonempty(),
 });
 
-if (anyEnvUndefinedOrEmpty) {
-  throw new Error("please set up environment");
+const envParse = envSchema.safeParse(process.env);
+if (!envParse.success) {
+  console.error("Invalid environment configuration:", envParse.error.format());
+  throw new Error("please set up environment variables correctly");
 }
+
+const {
+  BASE_URL: baseUrl,
+  CLIENT_ID: clientId,
+  CLIENT_SECRET: clientSecret,
+  SCOPES: scopes,
+  REDIRECT_URL: redirectUri,
+  RESPONSE_TYPE: responseType,
+  STATE: state,
+  SERVER_ENCRYPTION_KEY: serverEncKey,
+} = envParse.data;
 
 export const SpotifyTokenResponseSchema = z.object({
   access_token: z.string(),
@@ -75,10 +76,10 @@ app.get("/api/v1/callback", async (c) => {
   if (!parsedRes.success) {
     return c.status(500);
   }
-  const secretPayload = JSON.stringify(parsedRes.data);
-  const encoded = await encrypt(secretPayload);
+  const payload = JSON.stringify(parsedRes.data);
+  const encodedPayload = await encrypt(payload);
 
-  setCookie(c, "token", encoded);
+  setCookie(c, "token", encodedPayload);
   // try {
   //   const decrypted = await decrypt(encoded);
   //   console.log(JSON.parse(decrypted));
@@ -91,9 +92,6 @@ app.get("/api/v1/callback", async (c) => {
 // to generate key for env
 // `bun -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`
 async function encrypt(message: string) {
-  if (!serverEncKey) {
-    throw new Error("configure encryption key");
-  }
   const keyData = Uint8Array.fromHex(serverEncKey);
   const key = await crypto.subtle.importKey("raw", keyData, "AES-GCM", false, [
     "encrypt",
@@ -114,9 +112,6 @@ async function encrypt(message: string) {
 }
 
 async function decrypt(base64Bundle: string) {
-  if (!serverEncKey) {
-    throw new Error("configure encryption key");
-  }
   const keyData = Uint8Array.fromHex(serverEncKey);
   console.log(keyData.length);
   const key = await crypto.subtle.importKey("raw", keyData, "AES-GCM", false, [
